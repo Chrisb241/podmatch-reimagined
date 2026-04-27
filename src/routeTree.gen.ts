@@ -12,6 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VenuesRouteImport } from './routes/venues'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardPodcasterRouteImport } from './routes/dashboard.podcaster'
+import { Route as DashboardGuestRouteImport } from './routes/dashboard.guest'
+import { Route as AuthSignupRouteImport } from './routes/auth.signup'
+import { Route as AuthLoginRouteImport } from './routes/auth.login'
 
 const VenuesRoute = VenuesRouteImport.update({
   id: '/venues',
@@ -28,35 +32,93 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardPodcasterRoute = DashboardPodcasterRouteImport.update({
+  id: '/dashboard/podcaster',
+  path: '/dashboard/podcaster',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardGuestRoute = DashboardGuestRouteImport.update({
+  id: '/dashboard/guest',
+  path: '/dashboard/guest',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSignupRoute = AuthSignupRouteImport.update({
+  id: '/auth/signup',
+  path: '/auth/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/explore': typeof ExploreRoute
   '/venues': typeof VenuesRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/dashboard/guest': typeof DashboardGuestRoute
+  '/dashboard/podcaster': typeof DashboardPodcasterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/explore': typeof ExploreRoute
   '/venues': typeof VenuesRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/dashboard/guest': typeof DashboardGuestRoute
+  '/dashboard/podcaster': typeof DashboardPodcasterRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/explore': typeof ExploreRoute
   '/venues': typeof VenuesRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/dashboard/guest': typeof DashboardGuestRoute
+  '/dashboard/podcaster': typeof DashboardPodcasterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/explore' | '/venues'
+  fullPaths:
+    | '/'
+    | '/explore'
+    | '/venues'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/dashboard/guest'
+    | '/dashboard/podcaster'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/explore' | '/venues'
-  id: '__root__' | '/' | '/explore' | '/venues'
+  to:
+    | '/'
+    | '/explore'
+    | '/venues'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/dashboard/guest'
+    | '/dashboard/podcaster'
+  id:
+    | '__root__'
+    | '/'
+    | '/explore'
+    | '/venues'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/dashboard/guest'
+    | '/dashboard/podcaster'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ExploreRoute: typeof ExploreRoute
   VenuesRoute: typeof VenuesRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthSignupRoute: typeof AuthSignupRoute
+  DashboardGuestRoute: typeof DashboardGuestRoute
+  DashboardPodcasterRoute: typeof DashboardPodcasterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +144,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/podcaster': {
+      id: '/dashboard/podcaster'
+      path: '/dashboard/podcaster'
+      fullPath: '/dashboard/podcaster'
+      preLoaderRoute: typeof DashboardPodcasterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/guest': {
+      id: '/dashboard/guest'
+      path: '/dashboard/guest'
+      fullPath: '/dashboard/guest'
+      preLoaderRoute: typeof DashboardGuestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/signup': {
+      id: '/auth/signup'
+      path: '/auth/signup'
+      fullPath: '/auth/signup'
+      preLoaderRoute: typeof AuthSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +179,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ExploreRoute: ExploreRoute,
   VenuesRoute: VenuesRoute,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthSignupRoute: AuthSignupRoute,
+  DashboardGuestRoute: DashboardGuestRoute,
+  DashboardPodcasterRoute: DashboardPodcasterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
