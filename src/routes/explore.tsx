@@ -1,62 +1,84 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ProfileCard from "@/components/ProfileCard";
+import ExpertCard from "@/components/ExpertCard";
+import PodcastCard from "@/components/PodcastCard";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, SlidersHorizontal, X } from "lucide-react";
-import { mockProfiles, allTopics } from "@/data/mockData";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Search, Loader2 } from "lucide-react";
+import {
+  fetchExperts,
+  fetchPodcasts,
+  type ExpertWithProfile,
+  type PodcastWithOwner,
+} from "@/lib/queries";
 
 export const Route = createFileRoute("/explore")({
   head: () => ({
     meta: [
-      { title: "Explorer les profils — PodMatch" },
-      { name: "description", content: "Trouvez le podcasteur ou l'invité parfait pour votre prochain épisode." },
-      { property: "og:title", content: "Explorer les profils — PodMatch" },
-      { property: "og:description", content: "Filtrez par thématique, disponibilité et type de profil." },
+      { title: "Explorer — PodMatch" },
+      { name: "description", content: "Découvrez les experts et podcasts disponibles sur PodMatch." },
+      { property: "og:title", content: "Explorer — PodMatch" },
+      { property: "og:description", content: "Trouvez l'expert ou le podcast parfait." },
     ],
   }),
   component: Explore,
 });
 
-const availabilityOptions = [
-  { value: "remote" as const, label: "À distance" },
-  { value: "in-person" as const, label: "Sur place" },
-  { value: "travel" as const, label: "Déplacement" },
-];
-
-const typeOptions = [
-  { value: "all", label: "Tous" },
-  { value: "podcaster", label: "Podcasteurs" },
-  { value: "guest", label: "Invités" },
-];
-
 function Explore() {
   const [search, setSearch] = useState("");
-  const [selectedType, setSelectedType] = useState("all");
-  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-  const [selectedAvailability, setSelectedAvailability] = useState<string[]>([]);
-  const [showFilters, setShowFilters] = useState(false);
+  const [experts, setExperts] = useState<ExpertWithProfile[] | null>(null);
+  const [podcasts, setPodcasts] = useState<PodcastWithOwner[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const toggleTopic = (t: string) =>
-    setSelectedTopics((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        setLoading(true);
+        const [e, p] = await Promise.all([fetchExperts(), fetchPodcasts()]);
+        if (!cancelled) {
+          setExperts(e);
+          setPodcasts(p);
+        }
+      } catch (err: any) {
+        if (!cancelled) setError(err.message ?? "Erreur de chargement");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-  const toggleAvailability = (a: string) =>
-    setSelectedAvailability((prev) => (prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a]));
+  const filteredExperts = useMemo(() => {
+    if (!experts) return [];
+    const q = search.toLowerCase().trim();
+    if (!q) return experts;
+    return experts.filter(
+      (e) =>
+        e.display_name?.toLowerCase().includes(q) ||
+        e.headline?.toLowerCase().includes(q) ||
+        e.expertise?.toLowerCase().includes(q) ||
+        e.bio?.toLowerCase().includes(q),
+    );
+  }, [experts, search]);
 
-  const filtered = useMemo(() => {
-    return mockProfiles.filter((p) => {
-      if (selectedType !== "all" && p.type !== selectedType) return false;
-      if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.bio.toLowerCase().includes(search.toLowerCase())) return false;
-      if (selectedTopics.length && !selectedTopics.some((t) => p.topics.includes(t))) return false;
-      if (selectedAvailability.length && !selectedAvailability.some((a) => p.availability.includes(a as never))) return false;
-      return true;
-    });
-  }, [search, selectedType, selectedTopics, selectedAvailability]);
-
-  const hasFilters = selectedTopics.length > 0 || selectedAvailability.length > 0;
+  const filteredPodcasts = useMemo(() => {
+    if (!podcasts) return [];
+    const q = search.toLowerCase().trim();
+    if (!q) return podcasts;
+    return podcasts.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q) ||
+        p.owner_display_name?.toLowerCase().includes(q),
+    );
+  }, [podcasts, search]);
 
   return (
     <div className="min-h-screen">
@@ -64,101 +86,96 @@ function Explore() {
       <div className="pt-24 pb-20">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl">
-            <h1 className="font-display font-bold text-3xl md:text-4xl">Explorer les profils</h1>
-            <p className="mt-2 text-muted-foreground">Trouvez le podcasteur ou l'invité parfait pour votre prochain épisode.</p>
+            <h1 className="font-display font-bold text-3xl md:text-4xl">Explorer</h1>
+            <p className="mt-2 text-muted-foreground">
+              Découvrez les experts et podcasts de la communauté PodMatch.
+            </p>
           </div>
 
-          <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Rechercher par nom, sujet..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <div className="flex gap-2">
-              {typeOptions.map((opt) => (
-                <Button
-                  key={opt.value}
-                  size="sm"
-                  variant={selectedType === opt.value ? "default" : "outline"}
-                  className={selectedType === opt.value ? "gradient-primary text-primary-foreground border-0" : ""}
-                  onClick={() => setSelectedType(opt.value)}
-                >
-                  {opt.label}
-                </Button>
-              ))}
-              <Button size="sm" variant="outline" onClick={() => setShowFilters(!showFilters)}>
-                <SlidersHorizontal className="h-4 w-4" />
-              </Button>
-            </div>
+          <div className="mt-8 relative max-w-xl">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Rechercher..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10"
+            />
           </div>
 
-          {showFilters && (
-            <div className="mt-4 p-5 bg-secondary/50 rounded-xl border space-y-4">
-              <div>
-                <h4 className="text-sm font-semibold mb-2">Thématiques</h4>
-                <div className="flex flex-wrap gap-2">
-                  {allTopics.map((t) => (
-                    <Badge
-                      key={t}
-                      variant={selectedTopics.includes(t) ? "default" : "outline"}
-                      className={`cursor-pointer text-xs ${selectedTopics.includes(t) ? "gradient-primary text-primary-foreground border-0" : ""}`}
-                      onClick={() => toggleTopic(t)}
-                    >
-                      {t}
-                    </Badge>
+          <Tabs defaultValue="experts" className="mt-8">
+            <TabsList>
+              <TabsTrigger value="experts">
+                Experts {experts && `(${filteredExperts.length})`}
+              </TabsTrigger>
+              <TabsTrigger value="podcasts">
+                Podcasts {podcasts && `(${filteredPodcasts.length})`}
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="experts" className="mt-6">
+              {loading ? (
+                <LoadingState />
+              ) : error ? (
+                <ErrorState message={error} />
+              ) : filteredExperts.length === 0 ? (
+                <EmptyState message={search ? "Aucun expert ne correspond à votre recherche" : "Aucun profil pour le moment"} />
+              ) : (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredExperts.map((e) => (
+                    <ExpertCard key={e.id} expert={e} />
                   ))}
                 </div>
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold mb-2">Disponibilité</h4>
-                <div className="flex flex-wrap gap-2">
-                  {availabilityOptions.map((a) => (
-                    <Badge
-                      key={a.value}
-                      variant={selectedAvailability.includes(a.value) ? "default" : "outline"}
-                      className={`cursor-pointer text-xs ${selectedAvailability.includes(a.value) ? "gradient-primary text-primary-foreground border-0" : ""}`}
-                      onClick={() => toggleAvailability(a.value)}
-                    >
-                      {a.label}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              {hasFilters && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="text-xs text-muted-foreground"
-                  onClick={() => { setSelectedTopics([]); setSelectedAvailability([]); }}
-                >
-                  <X className="h-3 w-3 mr-1" /> Effacer les filtres
-                </Button>
               )}
-            </div>
-          )}
+            </TabsContent>
 
-          <div className="mt-8">
-            <p className="text-sm text-muted-foreground mb-4">{filtered.length} profil{filtered.length !== 1 ? "s" : ""} trouvé{filtered.length !== 1 ? "s" : ""}</p>
-            {filtered.length > 0 ? (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filtered.map((p) => (
-                  <ProfileCard key={p.id} profile={p} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-16 text-muted-foreground">
-                <p className="text-lg">Aucun profil trouvé</p>
-                <p className="text-sm mt-1">Essayez d'ajuster vos filtres</p>
-              </div>
-            )}
-          </div>
+            <TabsContent value="podcasts" className="mt-6">
+              {loading ? (
+                <LoadingState />
+              ) : error ? (
+                <ErrorState message={error} />
+              ) : filteredPodcasts.length === 0 ? (
+                <EmptyState message={search ? "Aucun podcast ne correspond à votre recherche" : "Aucun podcast pour le moment"} />
+              ) : (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredPodcasts.map((p) => (
+                    <PodcastCard key={p.id} podcast={p} />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
       <Footer />
+    </div>
+  );
+}
+
+function LoadingState() {
+  return (
+    <div className="flex items-center justify-center py-16 text-muted-foreground">
+      <Loader2 className="h-5 w-5 animate-spin mr-2" />
+      Chargement...
+    </div>
+  );
+}
+
+function EmptyState({ message }: { message: string }) {
+  return (
+    <div className="text-center py-16 text-muted-foreground border border-dashed rounded-xl">
+      <p className="text-lg">{message}</p>
+      <p className="text-sm mt-1">Revenez bientôt — la communauté grandit chaque jour.</p>
+    </div>
+  );
+}
+
+function ErrorState({ message }: { message: string }) {
+  return (
+    <div className="text-center py-16 text-destructive">
+      <p className="text-sm">Erreur : {message}</p>
+      <Button variant="outline" size="sm" className="mt-4" onClick={() => window.location.reload()}>
+        Réessayer
+      </Button>
     </div>
   );
 }
