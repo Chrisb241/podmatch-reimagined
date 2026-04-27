@@ -1,4 +1,5 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { AuthProvider } from "@/hooks/useAuth";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -76,8 +77,8 @@ function RootComponent() {
 }
 
 function ClientOnlyToaster() {
-  const [mounted, setMounted] = (require("react") as typeof import("react")).useState(false);
-  (require("react") as typeof import("react")).useEffect(() => setMounted(true), []);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   if (!mounted) return null;
   return <Toaster />;
 }
