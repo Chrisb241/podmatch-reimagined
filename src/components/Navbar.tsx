@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Mic2 } from "lucide-react";
+import { Menu, X, Mic2, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
   { label: "Accueil", path: "/" as const },
@@ -12,6 +13,14 @@ const navLinks = [
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, role, signOut } = useAuth();
+  const dashboardPath = role === "guest" ? "/dashboard/guest" : "/dashboard/podcaster";
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate({ to: "/" });
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b">
@@ -44,10 +53,27 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" size="sm">Connexion</Button>
-          <Button size="sm" className="gradient-primary shadow-button text-primary-foreground border-0">
-            Inscription
-          </Button>
+          {user ? (
+            <>
+              <Link to={dashboardPath}>
+                <Button variant="ghost" size="sm">Dashboard</Button>
+              </Link>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
+                <LogOut className="h-4 w-4 mr-1" /> Déconnexion
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/auth/login">
+                <Button variant="ghost" size="sm">Connexion</Button>
+              </Link>
+              <Link to="/auth/signup">
+                <Button size="sm" className="gradient-primary shadow-button text-primary-foreground border-0">
+                  Inscription
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
 
         <button className="md:hidden text-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
@@ -75,10 +101,27 @@ const Navbar = () => {
             Comment ça marche
           </a>
           <div className="flex gap-2 pt-2">
-            <Button variant="outline" size="sm" className="flex-1">Connexion</Button>
-            <Button size="sm" className="flex-1 gradient-primary shadow-button text-primary-foreground border-0">
-              Inscription
-            </Button>
+            {user ? (
+              <>
+                <Link to={dashboardPath} className="flex-1" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">Dashboard</Button>
+                </Link>
+                <Button size="sm" className="flex-1" variant="outline" onClick={handleSignOut}>
+                  Déconnexion
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/auth/login" className="flex-1" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">Connexion</Button>
+                </Link>
+                <Link to="/auth/signup" className="flex-1" onClick={() => setMobileOpen(false)}>
+                  <Button size="sm" className="w-full gradient-primary shadow-button text-primary-foreground border-0">
+                    Inscription
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
