@@ -70,7 +70,14 @@ function RootComponent() {
   return (
     <AuthProvider>
       <Outlet />
-      <Toaster />
+      <ClientOnlyToaster />
     </AuthProvider>
   );
+}
+
+function ClientOnlyToaster() {
+  const [mounted, setMounted] = (require("react") as typeof import("react")).useState(false);
+  (require("react") as typeof import("react")).useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+  return <Toaster />;
 }
