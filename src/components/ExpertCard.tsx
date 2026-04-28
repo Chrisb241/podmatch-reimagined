@@ -1,8 +1,8 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { MapPin, User } from "lucide-react";
 import type { ExpertWithProfile } from "@/lib/queries";
 import { parseTopics } from "@/lib/topics";
+import ContactExpertButton from "@/components/ContactExpertButton";
 
 const ExpertCard = ({ expert }: { expert: ExpertWithProfile }) => {
   const name = expert.display_name ?? "Expert";
@@ -64,9 +64,7 @@ const ExpertCard = ({ expert }: { expert: ExpertWithProfile }) => {
       </div>
 
       <div className="px-6 pb-5">
-        <Button size="sm" className="w-full gradient-primary shadow-button text-primary-foreground border-0">
-          Voir le profil
-        </Button>
+        <ContactExpertButton expertId={expert.user_id} expertName={name} />
       </div>
     </div>
   );
