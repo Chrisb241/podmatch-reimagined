@@ -190,6 +190,7 @@ function Explore() {
                 </div>
               )}
             </div>
+            </>
             )}
 
             {activeTab === "podcasts" && (
