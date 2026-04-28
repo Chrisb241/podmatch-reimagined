@@ -2,7 +2,8 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Mic2, Search, MessageSquare, LogOut } from "lucide-react";
+import { Mic2, Search, MessageSquare, LogOut, Send } from "lucide-react";
+import SentRequests from "@/components/SentRequests";
 
 export const Route = createFileRoute("/dashboard/podcaster")({
   head: () => ({
@@ -72,9 +73,19 @@ function PodcasterDashboard() {
           <div className="p-6 rounded-xl border">
             <MessageSquare className="h-8 w-8 text-primary mb-3" />
             <h3 className="font-semibold text-lg">Mes conversations</h3>
-            <p className="text-sm text-muted-foreground mt-1">Bientôt disponible</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Voir ci-dessous vos demandes envoyées
+            </p>
           </div>
         </div>
+
+        <section className="mt-12">
+          <div className="flex items-center gap-2 mb-6">
+            <Send className="h-5 w-5 text-primary" />
+            <h2 className="text-2xl font-display font-bold">Demandes envoyées</h2>
+          </div>
+          <SentRequests />
+        </section>
       </main>
     </div>
   );

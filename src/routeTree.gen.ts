@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VenuesRouteImport } from './routes/venues'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MessagesRequestIdRouteImport } from './routes/messages.$requestId'
 import { Route as DashboardPodcasterRouteImport } from './routes/dashboard.podcaster'
 import { Route as DashboardGuestRouteImport } from './routes/dashboard.guest'
 import { Route as AuthSignupRouteImport } from './routes/auth.signup'
@@ -30,6 +31,11 @@ const ExploreRoute = ExploreRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRequestIdRoute = MessagesRequestIdRouteImport.update({
+  id: '/messages/$requestId',
+  path: '/messages/$requestId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardPodcasterRoute = DashboardPodcasterRouteImport.update({
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/auth/signup': typeof AuthSignupRoute
   '/dashboard/guest': typeof DashboardGuestRoute
   '/dashboard/podcaster': typeof DashboardPodcasterRoute
+  '/messages/$requestId': typeof MessagesRequestIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/auth/signup': typeof AuthSignupRoute
   '/dashboard/guest': typeof DashboardGuestRoute
   '/dashboard/podcaster': typeof DashboardPodcasterRoute
+  '/messages/$requestId': typeof MessagesRequestIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/auth/signup': typeof AuthSignupRoute
   '/dashboard/guest': typeof DashboardGuestRoute
   '/dashboard/podcaster': typeof DashboardPodcasterRoute
+  '/messages/$requestId': typeof MessagesRequestIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/dashboard/guest'
     | '/dashboard/podcaster'
+    | '/messages/$requestId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/dashboard/guest'
     | '/dashboard/podcaster'
+    | '/messages/$requestId'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/dashboard/guest'
     | '/dashboard/podcaster'
+    | '/messages/$requestId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   AuthSignupRoute: typeof AuthSignupRoute
   DashboardGuestRoute: typeof DashboardGuestRoute
   DashboardPodcasterRoute: typeof DashboardPodcasterRoute
+  MessagesRequestIdRoute: typeof MessagesRequestIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages/$requestId': {
+      id: '/messages/$requestId'
+      path: '/messages/$requestId'
+      fullPath: '/messages/$requestId'
+      preLoaderRoute: typeof MessagesRequestIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/podcaster': {
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSignupRoute: AuthSignupRoute,
   DashboardGuestRoute: DashboardGuestRoute,
   DashboardPodcasterRoute: DashboardPodcasterRoute,
+  MessagesRequestIdRoute: MessagesRequestIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
