@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, User } from "lucide-react";
 import type { ExpertWithProfile } from "@/lib/queries";
+import { parseTopics } from "@/lib/topics";
 
 const ExpertCard = ({ expert }: { expert: ExpertWithProfile }) => {
   const name = expert.display_name ?? "Expert";
