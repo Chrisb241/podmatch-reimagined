@@ -64,9 +64,7 @@ const ExpertCard = ({ expert }: { expert: ExpertWithProfile }) => {
       </div>
 
       <div className="px-6 pb-5">
-        <Button size="sm" className="w-full gradient-primary shadow-button text-primary-foreground border-0">
-          Voir le profil
-        </Button>
+        <ContactExpertButton expertId={expert.user_id} expertName={name} />
       </div>
     </div>
   );
