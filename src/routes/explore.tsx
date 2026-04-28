@@ -139,6 +139,42 @@ function Explore() {
             </div>
 
             {activeTab === "experts" && (
+            <>
+            <div className="mt-6">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-medium text-muted-foreground">
+                  Filtrer par thématique
+                </h2>
+                {selectedTopics.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTopics([])}
+                    className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                  >
+                    <X className="h-3 w-3" /> Réinitialiser ({selectedTopics.length})
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {TOPICS.map((topic) => {
+                  const active = selectedTopics.includes(topic);
+                  return (
+                    <Badge
+                      key={topic}
+                      variant={active ? "default" : "outline"}
+                      onClick={() => toggleTopic(topic)}
+                      className={`cursor-pointer select-none transition-colors px-3 py-1 text-xs ${
+                        active
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "hover:bg-accent"
+                      }`}
+                    >
+                      {topic}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
             <div className="mt-6">
               {loading ? (
                 <LoadingState />
