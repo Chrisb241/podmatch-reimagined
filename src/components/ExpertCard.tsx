@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, User } from "lucide-react";
 import type { ExpertWithProfile } from "@/lib/queries";
+import { parseTopics } from "@/lib/topics";
 
 const ExpertCard = ({ expert }: { expert: ExpertWithProfile }) => {
   const name = expert.display_name ?? "Expert";
@@ -45,11 +46,15 @@ const ExpertCard = ({ expert }: { expert: ExpertWithProfile }) => {
         )}
 
         <div className="mt-4 flex flex-wrap gap-1.5">
-          {expert.expertise && (
-            <Badge variant="outline" className="text-[10px] bg-accent/50 border-accent text-accent-foreground">
-              {expert.expertise}
+          {parseTopics(expert.expertise).map((topic) => (
+            <Badge
+              key={topic}
+              variant="outline"
+              className="text-[10px] bg-accent/50 border-accent text-accent-foreground"
+            >
+              {topic}
             </Badge>
-          )}
+          ))}
           {expert.languages?.map((lang) => (
             <Badge key={lang} variant="outline" className="text-[10px]">
               {lang}

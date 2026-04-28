@@ -6,13 +6,15 @@ import ExpertCard from "@/components/ExpertCard";
 import PodcastCard from "@/components/PodcastCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Search, Loader2, X } from "lucide-react";
 import {
   fetchExperts,
   fetchPodcasts,
   type ExpertWithProfile,
   type PodcastWithOwner,
 } from "@/lib/queries";
+import { TOPICS, parseTopics } from "@/lib/topics";
 
 export const Route = createFileRoute("/explore")({
   head: () => ({
@@ -29,10 +31,17 @@ export const Route = createFileRoute("/explore")({
 function Explore() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<"experts" | "podcasts">("experts");
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [experts, setExperts] = useState<ExpertWithProfile[] | null>(null);
   const [podcasts, setPodcasts] = useState<PodcastWithOwner[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const toggleTopic = (topic: string) => {
+    setSelectedTopics((prev) =>
+      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic],
+    );
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -58,15 +67,20 @@ function Explore() {
   const filteredExperts = useMemo(() => {
     if (!experts) return [];
     const q = search.toLowerCase().trim();
-    if (!q) return experts;
-    return experts.filter(
-      (e) =>
+    return experts.filter((e) => {
+      const matchesQuery =
+        !q ||
         e.display_name?.toLowerCase().includes(q) ||
         e.headline?.toLowerCase().includes(q) ||
         e.expertise?.toLowerCase().includes(q) ||
-        e.bio?.toLowerCase().includes(q),
-    );
-  }, [experts, search]);
+        e.bio?.toLowerCase().includes(q);
+      if (!matchesQuery) return false;
+      if (selectedTopics.length === 0) return true;
+      const expertTopics = parseTopics(e.expertise).map((t) => t.toLowerCase());
+      // ET logique : l'expert doit posséder TOUTES les thématiques sélectionnées
+      return selectedTopics.every((t) => expertTopics.includes(t.toLowerCase()));
+    });
+  }, [experts, search, selectedTopics]);
 
   const filteredPodcasts = useMemo(() => {
     if (!podcasts) return [];
@@ -125,6 +139,42 @@ function Explore() {
             </div>
 
             {activeTab === "experts" && (
+            <>
+            <div className="mt-6">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-medium text-muted-foreground">
+                  Filtrer par thématique
+                </h2>
+                {selectedTopics.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTopics([])}
+                    className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                  >
+                    <X className="h-3 w-3" /> Réinitialiser ({selectedTopics.length})
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {TOPICS.map((topic) => {
+                  const active = selectedTopics.includes(topic);
+                  return (
+                    <Badge
+                      key={topic}
+                      variant={active ? "default" : "outline"}
+                      onClick={() => toggleTopic(topic)}
+                      className={`cursor-pointer select-none transition-colors px-3 py-1 text-xs ${
+                        active
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "hover:bg-accent"
+                      }`}
+                    >
+                      {topic}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
             <div className="mt-6">
               {loading ? (
                 <LoadingState />
@@ -140,6 +190,7 @@ function Explore() {
                 </div>
               )}
             </div>
+            </>
             )}
 
             {activeTab === "podcasts" && (
