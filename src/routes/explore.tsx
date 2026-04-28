@@ -6,13 +6,15 @@ import ExpertCard from "@/components/ExpertCard";
 import PodcastCard from "@/components/PodcastCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Search, Loader2, X } from "lucide-react";
 import {
   fetchExperts,
   fetchPodcasts,
   type ExpertWithProfile,
   type PodcastWithOwner,
 } from "@/lib/queries";
+import { TOPICS, parseTopics } from "@/lib/topics";
 
 export const Route = createFileRoute("/explore")({
   head: () => ({
