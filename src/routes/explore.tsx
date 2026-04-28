@@ -6,7 +6,6 @@ import ExpertCard from "@/components/ExpertCard";
 import PodcastCard from "@/components/PodcastCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Search, Loader2 } from "lucide-react";
 import {
   fetchExperts,
@@ -29,6 +28,7 @@ export const Route = createFileRoute("/explore")({
 
 function Explore() {
   const [search, setSearch] = useState("");
+  const [activeTab, setActiveTab] = useState<"experts" | "podcasts">("experts");
   const [experts, setExperts] = useState<ExpertWithProfile[] | null>(null);
   const [podcasts, setPodcasts] = useState<PodcastWithOwner[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -102,17 +102,30 @@ function Explore() {
             />
           </div>
 
-          <Tabs defaultValue="experts" className="mt-8">
-            <TabsList>
-              <TabsTrigger value="experts">
+          <div className="mt-8">
+            <div className="inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground">
+              <button
+                type="button"
+                onClick={() => setActiveTab("experts")}
+                className={`inline-flex h-7 items-center justify-center whitespace-nowrap rounded-md px-3 text-sm font-medium transition-all ${
+                  activeTab === "experts" ? "bg-background text-foreground shadow" : "hover:text-foreground"
+                }`}
+              >
                 Experts {experts && `(${filteredExperts.length})`}
-              </TabsTrigger>
-              <TabsTrigger value="podcasts">
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("podcasts")}
+                className={`inline-flex h-7 items-center justify-center whitespace-nowrap rounded-md px-3 text-sm font-medium transition-all ${
+                  activeTab === "podcasts" ? "bg-background text-foreground shadow" : "hover:text-foreground"
+                }`}
+              >
                 Podcasts {podcasts && `(${filteredPodcasts.length})`}
-              </TabsTrigger>
-            </TabsList>
+              </button>
+            </div>
 
-            <TabsContent value="experts" className="mt-6">
+            {activeTab === "experts" && (
+            <div className="mt-6">
               {loading ? (
                 <LoadingState />
               ) : error ? (
@@ -126,9 +139,11 @@ function Explore() {
                   ))}
                 </div>
               )}
-            </TabsContent>
+            </div>
+            )}
 
-            <TabsContent value="podcasts" className="mt-6">
+            {activeTab === "podcasts" && (
+            <div className="mt-6">
               {loading ? (
                 <LoadingState />
               ) : error ? (
@@ -142,8 +157,9 @@ function Explore() {
                   ))}
                 </div>
               )}
-            </TabsContent>
-          </Tabs>
+            </div>
+            )}
+          </div>
         </div>
       </div>
       <Footer />
