@@ -46,11 +46,15 @@ const ExpertCard = ({ expert }: { expert: ExpertWithProfile }) => {
         )}
 
         <div className="mt-4 flex flex-wrap gap-1.5">
-          {expert.expertise && (
-            <Badge variant="outline" className="text-[10px] bg-accent/50 border-accent text-accent-foreground">
-              {expert.expertise}
+          {parseTopics(expert.expertise).map((topic) => (
+            <Badge
+              key={topic}
+              variant="outline"
+              className="text-[10px] bg-accent/50 border-accent text-accent-foreground"
+            >
+              {topic}
             </Badge>
-          )}
+          ))}
           {expert.languages?.map((lang) => (
             <Badge key={lang} variant="outline" className="text-[10px]">
               {lang}
