@@ -67,15 +67,20 @@ function Explore() {
   const filteredExperts = useMemo(() => {
     if (!experts) return [];
     const q = search.toLowerCase().trim();
-    if (!q) return experts;
-    return experts.filter(
-      (e) =>
+    return experts.filter((e) => {
+      const matchesQuery =
+        !q ||
         e.display_name?.toLowerCase().includes(q) ||
         e.headline?.toLowerCase().includes(q) ||
         e.expertise?.toLowerCase().includes(q) ||
-        e.bio?.toLowerCase().includes(q),
-    );
-  }, [experts, search]);
+        e.bio?.toLowerCase().includes(q);
+      if (!matchesQuery) return false;
+      if (selectedTopics.length === 0) return true;
+      const expertTopics = parseTopics(e.expertise).map((t) => t.toLowerCase());
+      // ET logique : l'expert doit posséder TOUTES les thématiques sélectionnées
+      return selectedTopics.every((t) => expertTopics.includes(t.toLowerCase()));
+    });
+  }, [experts, search, selectedTopics]);
 
   const filteredPodcasts = useMemo(() => {
     if (!podcasts) return [];
