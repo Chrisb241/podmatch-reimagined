@@ -31,10 +31,17 @@ export const Route = createFileRoute("/explore")({
 function Explore() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<"experts" | "podcasts">("experts");
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [experts, setExperts] = useState<ExpertWithProfile[] | null>(null);
   const [podcasts, setPodcasts] = useState<PodcastWithOwner[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const toggleTopic = (topic: string) => {
+    setSelectedTopics((prev) =>
+      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic],
+    );
+  };
 
   useEffect(() => {
     let cancelled = false;
