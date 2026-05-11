@@ -79,14 +79,10 @@ const HeroSection = () => {
         >
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-green-500" />
-            {stats ? `${stats.profiles} profil${stats.profiles > 1 ? "s" : ""} actif${stats.profiles > 1 ? "s" : ""}` : "—"}
+            {stats ? `${stats.profiles} inscrit${stats.profiles > 1 ? "s" : ""}` : "—"}
           </span>
           <span>•</span>
-          <span>
-            {stats ? `${stats.connections} connexion${stats.connections > 1 ? "s" : ""} réussie${stats.connections > 1 ? "s" : ""}` : "—"}
-          </span>
-          <span className="hidden sm:inline">•</span>
-          <span className="hidden sm:inline">100% gratuit</span>
+          <span>100% gratuit</span>
         </motion.div>
       </div>
     </section>
