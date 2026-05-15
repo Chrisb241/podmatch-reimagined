@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, Users, ExternalLink } from "lucide-react";
+import { Search, MapPin, Users, ExternalLink, Mic, Laptop } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/venues")({
@@ -39,11 +39,6 @@ const TYPE_LABELS: Record<string, string> = {
   coworking: "Coworking",
 };
 
-const TYPE_IMAGES: Record<string, string> = {
-  studio: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=800",
-  coworking: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800",
-  salle_evenement: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800",
-};
 
 function Venues() {
   const [lieux, setLieux] = useState<Lieu[]>([]);
@@ -151,18 +146,32 @@ function Venues() {
                     key={l.id}
                     className="group bg-card rounded-xl border shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden flex flex-col"
                   >
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={(l.type && TYPE_IMAGES[l.type]) || TYPE_IMAGES.studio}
-                        alt={l.name}
-                        className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      {l.type && (
-                        <Badge className="absolute top-3 left-3 bg-background/90 text-foreground backdrop-blur-sm border-0 text-[10px]">
-                          {TYPE_LABELS[l.type] ?? l.type}
-                        </Badge>
-                      )}
-                    </div>
+                    {(() => {
+                      const styles: Record<string, { bg: string; Icon: typeof MapPin }> = {
+                        studio: { bg: "#6D28D9", Icon: Mic },
+                        coworking: { bg: "#2563EB", Icon: Laptop },
+                        salle_evenement: { bg: "#BE185D", Icon: Users },
+                      };
+                      const { bg, Icon } = (l.type && styles[l.type]) || { bg: "#374151", Icon: MapPin };
+                      return (
+                        <div
+                          className="relative h-48 flex items-center justify-center"
+                          style={{ backgroundColor: bg }}
+                        >
+                          <Icon className="h-20 w-20 text-white" strokeWidth={1.5} />
+                          {l.type && (
+                            <Badge className="absolute top-3 left-3 bg-background/90 text-foreground backdrop-blur-sm border-0 text-[10px]">
+                              {TYPE_LABELS[l.type] ?? l.type}
+                            </Badge>
+                          )}
+                          {l.city && (
+                            <span className="absolute bottom-3 left-3 text-xs text-white/90 font-medium">
+                              {l.city}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })()}
                     <div className="p-5 flex flex-col flex-1">
                       <h3 className="font-display font-semibold text-base">{l.name}</h3>
                       {l.city && (
