@@ -155,17 +155,26 @@ function Venues() {
                       const { bg, Icon } = (l.type && styles[l.type]) || { bg: "#374151", Icon: MapPin };
                       return (
                         <div
-                          className="relative h-48 flex items-center justify-center"
+                          className="relative h-48 flex items-center justify-center overflow-hidden"
                           style={{ backgroundColor: bg }}
                         >
-                          <Icon className="h-20 w-20 text-white" strokeWidth={1.5} />
+                          {l.image_url ? (
+                            <img
+                              src={l.image_url}
+                              alt={l.name}
+                              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <Icon className="h-20 w-20 text-white" strokeWidth={1.5} />
+                          )}
                           {l.type && (
-                            <Badge className="absolute top-3 left-3 bg-background/90 text-foreground backdrop-blur-sm border-0 text-[10px]">
+                            <Badge className="absolute top-3 left-3 bg-background/90 text-foreground backdrop-blur-sm border-0 text-[10px] z-10">
                               {TYPE_LABELS[l.type] ?? l.type}
                             </Badge>
                           )}
                           {l.city && (
-                            <span className="absolute bottom-3 left-3 text-xs text-white/90 font-medium">
+                            <span className="absolute bottom-3 left-3 text-xs text-white font-medium z-10 drop-shadow">
                               {l.city}
                             </span>
                           )}
