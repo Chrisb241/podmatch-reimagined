@@ -182,14 +182,39 @@ function ExpertProfilePage() {
           </div>
 
           <div>
-            <Label htmlFor="avatarUrl">URL de votre photo</Label>
-            <Input
-              id="avatarUrl"
-              type="url"
-              placeholder="https://…"
-              value={avatarUrl}
-              onChange={(e) => setAvatarUrl(e.target.value)}
-            />
+            <Label>Photo de profil</Label>
+            <div className="flex items-center gap-4 mt-2">
+              <div className="h-20 w-20 rounded-full bg-muted overflow-hidden ring-2 ring-border flex items-center justify-center text-muted-foreground text-xs">
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
+                ) : (
+                  "Aucune"
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Input
+                  id="avatarFile"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (file.size > 2 * 1024 * 1024) {
+                      toast.error("Image trop lourde (max 2 Mo)");
+                      return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = () => setAvatarUrl(String(reader.result));
+                    reader.readAsDataURL(file);
+                  }}
+                />
+                {avatarUrl && (
+                  <Button type="button" variant="ghost" size="sm" onClick={() => setAvatarUrl("")}>
+                    Supprimer
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
 
           <div>
