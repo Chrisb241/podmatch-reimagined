@@ -39,11 +39,6 @@ const TYPE_LABELS: Record<string, string> = {
   coworking: "Coworking",
 };
 
-const TYPE_IMAGES: Record<string, string> = {
-  studio: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=800",
-  coworking: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800",
-  salle_evenement: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800",
-};
 
 function Venues() {
   const [lieux, setLieux] = useState<Lieu[]>([]);
