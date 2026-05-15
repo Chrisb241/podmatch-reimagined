@@ -7,9 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, MapPin, Users, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { lazy, Suspense } from "react";
-
-const LieuxMap = lazy(() => import("@/components/LieuxMap"));
 
 export const Route = createFileRoute("/venues")({
   head: () => ({
