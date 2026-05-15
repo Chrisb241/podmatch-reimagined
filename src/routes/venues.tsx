@@ -80,13 +80,6 @@ function Venues() {
     });
   }, [lieux, search, selectedCity, selectedType]);
 
-  const mapPoints = filtered.filter(
-    (l) => typeof l.latitude === "number" && typeof l.longitude === "number"
-  );
-  const mapCenter: [number, number] =
-    mapPoints.length > 0
-      ? [mapPoints[0].latitude!, mapPoints[0].longitude!]
-      : [46.6, 2.5];
 
   return (
     <div className="min-h-screen">
