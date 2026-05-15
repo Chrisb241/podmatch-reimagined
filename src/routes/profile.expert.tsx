@@ -105,7 +105,7 @@ function ExpertProfilePage() {
         {
           user_id: user.id,
           headline: headline || null,
-          expertise: topics.length ? serializeTopics(topics) : null,
+          expertise: topics.length ? (topics as unknown as string) : null,
           languages: langArray.length ? langArray : null,
         },
         { onConflict: "user_id" },
