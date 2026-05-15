@@ -62,7 +62,7 @@ function ExpertProfilePage() {
       }
       if (expert) {
         setHeadline(expert.headline ?? "");
-        setTopics(parseTopics(expert.expertise));
+        setTopics(Array.isArray(expert.expertise) ? expert.expertise : parseTopics(expert.expertise as unknown as string));
         setLanguages((expert.languages ?? []).join(", "));
       }
       setHydrated(true);
