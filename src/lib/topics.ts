@@ -22,8 +22,10 @@ export const TOPICS = [
 export type Topic = (typeof TOPICS)[number];
 
 /** Parse une chaîne expertise en liste de thématiques nettoyées. */
-export function parseTopics(input: string | null | undefined): string[] {
+export function parseTopics(input: string | string[] | null | undefined): string[] {
   if (!input) return [];
+  if (Array.isArray(input)) return input.map((t) => String(t).trim()).filter(Boolean);
+  if (typeof input !== "string") return [];
   return input
     .split(",")
     .map((t) => t.trim())
