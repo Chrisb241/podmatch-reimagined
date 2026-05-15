@@ -7,20 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, MapPin, Users, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { lazy, Suspense } from "react";
 
-// Fix default marker icons (Leaflet + bundlers)
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
+const LieuxMap = lazy(() => import("@/components/LieuxMap"));
 
 export const Route = createFileRoute("/venues")({
   head: () => ({
@@ -154,30 +143,18 @@ function Venues() {
           </div>
 
           <div className="mt-8 rounded-xl overflow-hidden border shadow-card h-[400px]">
-            <MapContainer
-              center={mapCenter}
-              zoom={mapPoints.length > 0 ? 6 : 5}
-              style={{ height: "100%", width: "100%" }}
-              scrollWheelZoom={false}
-            >
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            <Suspense fallback={<div className="h-full w-full bg-muted animate-pulse" />}>
+              <LieuxMap
+                points={mapPoints.map((l) => ({
+                  id: l.id,
+                  name: l.name,
+                  city: l.city,
+                  type: l.type,
+                  latitude: l.latitude!,
+                  longitude: l.longitude!,
+                }))}
               />
-              {mapPoints.map((l) => (
-                <Marker key={l.id} position={[l.latitude!, l.longitude!]}>
-                  <Popup>
-                    <div className="text-sm">
-                      <p className="font-semibold">{l.name}</p>
-                      <p className="text-xs text-muted-foreground">{l.city}</p>
-                      {l.type && (
-                        <p className="text-xs mt-1">{TYPE_LABELS[l.type] ?? l.type}</p>
-                      )}
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContainer>
+            </Suspense>
           </div>
 
           <div className="mt-8">
