@@ -62,7 +62,7 @@ function ExpertProfilePage() {
       }
       if (expert) {
         setHeadline(expert.headline ?? "");
-        setTopics(parseTopics(expert.expertise));
+        setTopics(Array.isArray(expert.expertise) ? expert.expertise : parseTopics(expert.expertise as unknown as string));
         setLanguages((expert.languages ?? []).join(", "));
       }
       setHydrated(true);
@@ -105,7 +105,7 @@ function ExpertProfilePage() {
         {
           user_id: user.id,
           headline: headline || null,
-          expertise: topics.length ? serializeTopics(topics) : null,
+          expertise: topics.length ? (topics as unknown as never) : null,
           languages: langArray.length ? langArray : null,
         },
         { onConflict: "user_id" },
