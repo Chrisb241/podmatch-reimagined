@@ -139,21 +139,6 @@ function Venues() {
             ))}
           </div>
 
-          <div className="mt-8 rounded-xl overflow-hidden border shadow-card h-[400px]">
-            <Suspense fallback={<div className="h-full w-full bg-muted animate-pulse" />}>
-              <LieuxMap
-                points={mapPoints.map((l) => ({
-                  id: l.id,
-                  name: l.name,
-                  city: l.city,
-                  type: l.type,
-                  latitude: l.latitude!,
-                  longitude: l.longitude!,
-                }))}
-              />
-            </Suspense>
-          </div>
-
           <div className="mt-8">
             <p className="text-sm text-muted-foreground mb-4">
               {loading
