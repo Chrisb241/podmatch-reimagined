@@ -151,20 +151,18 @@ function Venues() {
                     key={l.id}
                     className="group bg-card rounded-xl border shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden flex flex-col"
                   >
-                    {l.image_url && (
-                      <div className="relative overflow-hidden">
-                        <img
-                          src={l.image_url}
-                          alt={l.name}
-                          className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                        {l.type && (
-                          <Badge className="absolute top-3 left-3 bg-background/90 text-foreground backdrop-blur-sm border-0 text-[10px]">
-                            {TYPE_LABELS[l.type] ?? l.type}
-                          </Badge>
-                        )}
-                      </div>
-                    )}
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={(l.type && TYPE_IMAGES[l.type]) || TYPE_IMAGES.studio}
+                        alt={l.name}
+                        className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      {l.type && (
+                        <Badge className="absolute top-3 left-3 bg-background/90 text-foreground backdrop-blur-sm border-0 text-[10px]">
+                          {TYPE_LABELS[l.type] ?? l.type}
+                        </Badge>
+                      )}
+                    </div>
                     <div className="p-5 flex flex-col flex-1">
                       <h3 className="font-display font-semibold text-base">{l.name}</h3>
                       {l.city && (
