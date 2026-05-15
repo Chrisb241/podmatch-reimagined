@@ -56,13 +56,13 @@ function GuestDashboard() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-xl border">
+          <Link to="/profile/expert" className="p-6 rounded-xl border hover:border-primary transition-all">
             <User className="h-8 w-8 text-primary mb-3" />
             <h3 className="font-semibold text-lg">Mon profil expert</h3>
             <p className="text-sm text-muted-foreground mt-1">
               Complétez votre profil pour être trouvé
             </p>
-          </div>
+          </Link>
           <div className="p-6 rounded-xl border">
             <MessageSquare className="h-8 w-8 text-primary mb-3" />
             <h3 className="font-semibold text-lg">Mes conversations</h3>

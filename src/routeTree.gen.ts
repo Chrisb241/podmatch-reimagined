@@ -13,6 +13,7 @@ import { Route as VenuesRouteImport } from './routes/venues'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MessagesIndexRouteImport } from './routes/messages.index'
+import { Route as ProfileExpertRouteImport } from './routes/profile.expert'
 import { Route as MessagesRequestIdRouteImport } from './routes/messages.$requestId'
 import { Route as DashboardPodcasterRouteImport } from './routes/dashboard.podcaster'
 import { Route as DashboardGuestRouteImport } from './routes/dashboard.guest'
@@ -37,6 +38,11 @@ const IndexRoute = IndexRouteImport.update({
 const MessagesIndexRoute = MessagesIndexRouteImport.update({
   id: '/messages/',
   path: '/messages/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileExpertRoute = ProfileExpertRouteImport.update({
+  id: '/profile/expert',
+  path: '/profile/expert',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MessagesRequestIdRoute = MessagesRequestIdRouteImport.update({
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/guest': typeof DashboardGuestRoute
   '/dashboard/podcaster': typeof DashboardPodcasterRoute
   '/messages/$requestId': typeof MessagesRequestIdRoute
+  '/profile/expert': typeof ProfileExpertRoute
   '/messages/': typeof MessagesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/dashboard/guest': typeof DashboardGuestRoute
   '/dashboard/podcaster': typeof DashboardPodcasterRoute
   '/messages/$requestId': typeof MessagesRequestIdRoute
+  '/profile/expert': typeof ProfileExpertRoute
   '/messages': typeof MessagesIndexRoute
 }
 export interface FileRoutesById {
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/dashboard/guest': typeof DashboardGuestRoute
   '/dashboard/podcaster': typeof DashboardPodcasterRoute
   '/messages/$requestId': typeof MessagesRequestIdRoute
+  '/profile/expert': typeof ProfileExpertRoute
   '/messages/': typeof MessagesIndexRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/dashboard/guest'
     | '/dashboard/podcaster'
     | '/messages/$requestId'
+    | '/profile/expert'
     | '/messages/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/dashboard/guest'
     | '/dashboard/podcaster'
     | '/messages/$requestId'
+    | '/profile/expert'
     | '/messages'
   id:
     | '__root__'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/dashboard/guest'
     | '/dashboard/podcaster'
     | '/messages/$requestId'
+    | '/profile/expert'
     | '/messages/'
   fileRoutesById: FileRoutesById
 }
@@ -144,6 +156,7 @@ export interface RootRouteChildren {
   DashboardGuestRoute: typeof DashboardGuestRoute
   DashboardPodcasterRoute: typeof DashboardPodcasterRoute
   MessagesRequestIdRoute: typeof MessagesRequestIdRoute
+  ProfileExpertRoute: typeof ProfileExpertRoute
   MessagesIndexRoute: typeof MessagesIndexRoute
 }
 
@@ -175,6 +188,13 @@ declare module '@tanstack/react-router' {
       path: '/messages'
       fullPath: '/messages/'
       preLoaderRoute: typeof MessagesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile/expert': {
+      id: '/profile/expert'
+      path: '/profile/expert'
+      fullPath: '/profile/expert'
+      preLoaderRoute: typeof ProfileExpertRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/messages/$requestId': {
@@ -224,6 +244,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardGuestRoute: DashboardGuestRoute,
   DashboardPodcasterRoute: DashboardPodcasterRoute,
   MessagesRequestIdRoute: MessagesRequestIdRoute,
+  ProfileExpertRoute: ProfileExpertRoute,
   MessagesIndexRoute: MessagesIndexRoute,
 }
 export const routeTree = rootRouteImport
