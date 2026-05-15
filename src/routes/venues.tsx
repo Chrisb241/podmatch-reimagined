@@ -7,9 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, MapPin, Users, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { lazy, Suspense } from "react";
-
-const LieuxMap = lazy(() => import("@/components/LieuxMap"));
 
 export const Route = createFileRoute("/venues")({
   head: () => ({
@@ -83,13 +80,6 @@ function Venues() {
     });
   }, [lieux, search, selectedCity, selectedType]);
 
-  const mapPoints = filtered.filter(
-    (l) => typeof l.latitude === "number" && typeof l.longitude === "number"
-  );
-  const mapCenter: [number, number] =
-    mapPoints.length > 0
-      ? [mapPoints[0].latitude!, mapPoints[0].longitude!]
-      : [46.6, 2.5];
 
   return (
     <div className="min-h-screen">
@@ -140,21 +130,6 @@ function Venues() {
                 {t === "Tous" ? t : TYPE_LABELS[t] ?? t}
               </Badge>
             ))}
-          </div>
-
-          <div className="mt-8 rounded-xl overflow-hidden border shadow-card h-[400px]">
-            <Suspense fallback={<div className="h-full w-full bg-muted animate-pulse" />}>
-              <LieuxMap
-                points={mapPoints.map((l) => ({
-                  id: l.id,
-                  name: l.name,
-                  city: l.city,
-                  type: l.type,
-                  latitude: l.latitude!,
-                  longitude: l.longitude!,
-                }))}
-              />
-            </Suspense>
           </div>
 
           <div className="mt-8">
