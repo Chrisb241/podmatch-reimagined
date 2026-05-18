@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "@tanstack/react-router";
 
 const CTASection = () => (
   <section className="py-20 md:py-28">
@@ -20,8 +21,10 @@ const CTASection = () => (
             Rejoignez des milliers de podcasteurs et invités qui utilisent PodMatch pour créer du contenu exceptionnel.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" variant="secondary" className="px-8 h-12">
-              Commencer gratuitement <ArrowRight className="ml-2 h-4 w-4" />
+            <Button size="lg" variant="secondary" className="px-8 h-12" asChild>
+              <Link to="/auth/signup">
+                Commencer gratuitement <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
             </Button>
           </div>
         </div>
