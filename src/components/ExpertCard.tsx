@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { MapPin, User } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import type { ExpertWithProfile } from "@/lib/queries";
 import { parseTopics } from "@/lib/topics";
 import ContactExpertButton from "@/components/ContactExpertButton";
