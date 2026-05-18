@@ -66,7 +66,7 @@ const ExpertCard = ({ expert }: { expert: ExpertWithProfile }) => {
             </Badge>
           ))}
         </div>
-      </div>
+      </Link>
 
       <div className="px-6 pb-5">
         <ContactExpertButton expertId={expert.user_id} expertName={name} />
