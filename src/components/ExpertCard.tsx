@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { MapPin, User } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import type { ExpertWithProfile } from "@/lib/queries";
 import { parseTopics } from "@/lib/topics";
 import ContactExpertButton from "@/components/ContactExpertButton";
@@ -10,7 +11,11 @@ const ExpertCard = ({ expert }: { expert: ExpertWithProfile }) => {
 
   return (
     <div className="group bg-card rounded-xl border shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden">
-      <div className="p-6">
+      <Link
+        to="/profil/$id"
+        params={{ id: expert.user_id }}
+        className="block p-6 hover:bg-muted/30 transition-colors"
+      >
         <div className="flex items-start gap-4">
           <div className="relative">
             {expert.avatar_url ? (
@@ -61,7 +66,7 @@ const ExpertCard = ({ expert }: { expert: ExpertWithProfile }) => {
             </Badge>
           ))}
         </div>
-      </div>
+      </Link>
 
       <div className="px-6 pb-5">
         <ContactExpertButton expertId={expert.user_id} expertName={name} />
