@@ -2,8 +2,20 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Mic2, Search, MessageSquare, LogOut, Send } from "lucide-react";
+import {
+  Mic2,
+  Search,
+  MessageSquare,
+  LogOut,
+  Send,
+  Users,
+  Mic,
+  Clock,
+} from "lucide-react";
 import SentRequests from "@/components/SentRequests";
+import MyPodcasts from "@/components/MyPodcasts";
+import ActiveConversations from "@/components/ActiveConversations";
+import { useDashboardStats, StatCard } from "@/components/DashboardStats";
 
 export const Route = createFileRoute("/dashboard/podcaster")({
   head: () => ({
@@ -15,6 +27,7 @@ export const Route = createFileRoute("/dashboard/podcaster")({
 function PodcasterDashboard() {
   const { user, role, loading, signOut } = useAuth();
   const navigate = useNavigate();
+  const { stats } = useDashboardStats();
 
   useEffect(() => {
     if (loading) return;
@@ -55,6 +68,26 @@ function PodcasterDashboard() {
           </p>
         </div>
 
+        {/* Stats */}
+        <div className="grid sm:grid-cols-3 gap-4 mb-10">
+          <StatCard
+            label="Experts contactés"
+            value={stats.uniqueExpertsContacted}
+            icon={Users}
+          />
+          <StatCard
+            label="Demandes en attente"
+            value={stats.pendingSent}
+            icon={Clock}
+          />
+          <StatCard
+            label="Conversations actives"
+            value={stats.acceptedConversations}
+            icon={MessageSquare}
+          />
+        </div>
+
+        {/* Quick actions */}
         <div className="grid md:grid-cols-3 gap-6">
           <Link to="/explore" className="p-6 rounded-xl border hover:border-primary transition-all">
             <Search className="h-8 w-8 text-primary mb-3" />
@@ -79,12 +112,36 @@ function PodcasterDashboard() {
           </Link>
         </div>
 
+        {/* My podcasts */}
+        <section className="mt-12">
+          <div className="flex items-center gap-2 mb-6">
+            <Mic className="h-5 w-5 text-primary" />
+            <h2 className="text-2xl font-display font-bold">Mes podcasts</h2>
+          </div>
+          <MyPodcasts />
+        </section>
+
+        {/* Sent requests */}
         <section className="mt-12">
           <div className="flex items-center gap-2 mb-6">
             <Send className="h-5 w-5 text-primary" />
             <h2 className="text-2xl font-display font-bold">Demandes envoyées</h2>
           </div>
           <SentRequests />
+        </section>
+
+        {/* Active conversations */}
+        <section className="mt-12">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5 text-primary" />
+              <h2 className="text-2xl font-display font-bold">Conversations actives</h2>
+            </div>
+            <Button asChild variant="outline" size="sm">
+              <Link to="/messages">Tout voir</Link>
+            </Button>
+          </div>
+          <ActiveConversations />
         </section>
       </main>
     </div>
