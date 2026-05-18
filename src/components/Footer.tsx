@@ -21,22 +21,22 @@ const Footer = () => (
           <div className="space-y-2 text-sm text-muted-foreground">
             <Link to="/explore" className="block hover:text-primary">Explorer</Link>
             <Link to="/venues" className="block hover:text-primary">Lieux</Link>
-            <a href="#" className="block hover:text-primary">Inscription</a>
+            <Link to="/auth/signup" className="block hover:text-primary">Inscription</Link>
           </div>
         </div>
         <div>
           <h4 className="font-display font-semibold text-sm mb-3">Ressources</h4>
           <div className="space-y-2 text-sm text-muted-foreground">
-            <a href="#" className="block hover:text-primary">Blog</a>
-            <a href="#" className="block hover:text-primary">FAQ</a>
-            <a href="#" className="block hover:text-primary">Contact</a>
+            <Link to="/blog" className="block hover:text-primary">Blog</Link>
+            <Link to="/faq" className="block hover:text-primary">FAQ</Link>
+            <Link to="/contact" className="block hover:text-primary">Contact</Link>
           </div>
         </div>
         <div>
           <h4 className="font-display font-semibold text-sm mb-3">Légal</h4>
           <div className="space-y-2 text-sm text-muted-foreground">
-            <a href="#" className="block hover:text-primary">Confidentialité</a>
-            <a href="#" className="block hover:text-primary">CGU</a>
+            <Link to="/privacy" className="block hover:text-primary">Confidentialité</Link>
+            <Link to="/terms" className="block hover:text-primary">CGU</Link>
           </div>
         </div>
       </div>
