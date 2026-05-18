@@ -131,8 +131,12 @@ function PublicExpertProfile() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-4xl">
-        <Button asChild variant="outline" size="sm" className="mb-6">
+      <main className="flex-1 container mx-auto px-4 pt-24 pb-8 md:pt-28 md:pb-12 max-w-4xl">
+        <Button
+          asChild
+          size="sm"
+          className="mb-8 h-10 rounded-xl gradient-primary text-primary-foreground border-0 shadow-button hover:opacity-95"
+        >
           <Link to="/explore">
             <ArrowLeft className="h-4 w-4 mr-2" /> Retour à l'exploration
           </Link>
