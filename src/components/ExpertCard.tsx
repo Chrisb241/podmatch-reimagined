@@ -11,7 +11,11 @@ const ExpertCard = ({ expert }: { expert: ExpertWithProfile }) => {
 
   return (
     <div className="group bg-card rounded-xl border shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden">
-      <div className="p-6">
+      <Link
+        to="/profil/$id"
+        params={{ id: expert.user_id }}
+        className="block p-6 hover:bg-muted/30 transition-colors"
+      >
         <div className="flex items-start gap-4">
           <div className="relative">
             {expert.avatar_url ? (
