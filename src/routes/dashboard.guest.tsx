@@ -14,6 +14,8 @@ import {
 import ReceivedRequests from "@/components/ReceivedRequests";
 import ActiveConversations from "@/components/ActiveConversations";
 import { useDashboardStats, StatCard } from "@/components/DashboardStats";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { UnreadBadge } from "@/components/UnreadBadge";
 
 export const Route = createFileRoute("/dashboard/guest")({
   head: () => ({
@@ -26,6 +28,7 @@ function GuestDashboard() {
   const { user, role, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const { stats } = useDashboardStats();
+  const { total: unreadTotal } = useUnreadMessages();
 
   useEffect(() => {
     if (loading) return;
@@ -106,10 +109,13 @@ function GuestDashboard() {
           </Link>
           <Link
             to="/messages"
-            className="block p-6 rounded-xl border hover:border-primary transition-all"
+            className="relative block p-6 rounded-xl border hover:border-primary transition-all"
           >
             <MessageSquare className="h-8 w-8 text-primary mb-3" />
-            <h3 className="font-semibold text-lg">Mes conversations</h3>
+            <h3 className="font-semibold text-lg flex items-center gap-2">
+              Mes conversations
+              {unreadTotal > 0 && <UnreadBadge count={unreadTotal} />}
+            </h3>
             <p className="text-sm text-muted-foreground mt-1">
               Accéder à votre messagerie
             </p>

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Mic2, LogOut } from "lucide-react";
+import { Menu, X, Mic2, LogOut, MessageSquare } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { UnreadBadge } from "@/components/UnreadBadge";
 
 const navLinks = [
   { label: "Accueil", path: "/" as const },
@@ -15,6 +17,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, role, signOut } = useAuth();
+  const { total: unreadTotal } = useUnreadMessages();
   const dashboardPath = role === "guest" ? "/dashboard/guest" : "/dashboard/podcaster";
 
   const handleSignOut = async () => {
@@ -55,6 +58,16 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-3">
           {user ? (
             <>
+              <Link to="/messages" className="relative" aria-label="Messagerie">
+                <Button variant="ghost" size="sm" className="relative">
+                  <MessageSquare className="h-5 w-5" />
+                  {unreadTotal > 0 && (
+                    <span className="absolute -top-1 -right-1">
+                      <UnreadBadge count={unreadTotal} />
+                    </span>
+                  )}
+                </Button>
+              </Link>
               <Link to={dashboardPath}>
                 <Button variant="ghost" size="sm">Dashboard</Button>
               </Link>
@@ -103,6 +116,16 @@ const Navbar = () => {
           <div className="flex gap-2 pt-2">
             {user ? (
               <>
+                <Link to="/messages" className="flex-1" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full relative">
+                    <MessageSquare className="h-4 w-4 mr-1" /> Messages
+                    {unreadTotal > 0 && (
+                      <span className="ml-2">
+                        <UnreadBadge count={unreadTotal} />
+                      </span>
+                    )}
+                  </Button>
+                </Link>
                 <Link to={dashboardPath} className="flex-1" onClick={() => setMobileOpen(false)}>
                   <Button variant="outline" size="sm" className="w-full">Dashboard</Button>
                 </Link>

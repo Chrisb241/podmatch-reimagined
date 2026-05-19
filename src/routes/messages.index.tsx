@@ -13,6 +13,7 @@ import {
   type ContactRequestWithProfile,
   type Message,
 } from "@/lib/contact";
+import { markConversationRead } from "@/hooks/useUnreadMessages";
 
 export const Route = createFileRoute("/messages/")({
   head: () => ({
@@ -73,6 +74,7 @@ function MessagesPage() {
         setLoadingMsgs(true);
         const msgs = await fetchMessages(activeId);
         if (!cancelled) setMessages(msgs);
+        if (user) markConversationRead(activeId, user.id).catch(() => {});
       } catch (err: any) {
         toast.error(err.message ?? "Erreur de chargement");
       } finally {
@@ -82,7 +84,7 @@ function MessagesPage() {
     return () => {
       cancelled = true;
     };
-  }, [activeId]);
+  }, [activeId, user?.id]);
 
   // Realtime subscription for messages of active conversation
   useEffect(() => {
@@ -102,6 +104,9 @@ function MessagesPage() {
           setMessages((prev) =>
             prev.some((x) => x.id === m.id) ? prev : [...prev, m],
           );
+          if (user && m.sender_id !== user.id) {
+            markConversationRead(activeId, user.id).catch(() => {});
+          }
         },
       )
       .subscribe();

@@ -16,6 +16,8 @@ import SentRequests from "@/components/SentRequests";
 import MyPodcasts from "@/components/MyPodcasts";
 import ActiveConversations from "@/components/ActiveConversations";
 import { useDashboardStats, StatCard } from "@/components/DashboardStats";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { UnreadBadge } from "@/components/UnreadBadge";
 
 export const Route = createFileRoute("/dashboard/podcaster")({
   head: () => ({
@@ -28,6 +30,7 @@ function PodcasterDashboard() {
   const { user, role, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const { stats } = useDashboardStats();
+  const { total: unreadTotal } = useUnreadMessages();
 
   useEffect(() => {
     if (loading) return;
@@ -103,9 +106,12 @@ function PodcasterDashboard() {
               Trouvez un lieu pour vos enregistrements
             </p>
           </Link>
-          <Link to="/messages" className="p-6 rounded-xl border hover:border-primary transition-all">
+          <Link to="/messages" className="relative p-6 rounded-xl border hover:border-primary transition-all">
             <MessageSquare className="h-8 w-8 text-primary mb-3" />
-            <h3 className="font-semibold text-lg">Mes conversations</h3>
+            <h3 className="font-semibold text-lg flex items-center gap-2">
+              Mes conversations
+              {unreadTotal > 0 && <UnreadBadge count={unreadTotal} />}
+            </h3>
             <p className="text-sm text-muted-foreground mt-1">
               Accéder à votre messagerie
             </p>
