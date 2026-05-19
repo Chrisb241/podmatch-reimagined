@@ -254,8 +254,12 @@ function PublicExpertProfile() {
                   {data.degree && (
                     <p className="font-display font-semibold truncate">{data.degree}</p>
                   )}
-                  {data.school && (
-                    <p className="text-sm text-muted-foreground truncate">{data.school}</p>
+                  {(data.school || data.degree_year) && (
+                    <p className="text-sm text-muted-foreground truncate">
+                      {data.school}
+                      {data.school && data.degree_year ? " · " : ""}
+                      {data.degree_year ?? ""}
+                    </p>
                   )}
                 </div>
               </div>
