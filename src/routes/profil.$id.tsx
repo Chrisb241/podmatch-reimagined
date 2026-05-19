@@ -65,7 +65,7 @@ function PublicExpertProfile() {
             .maybeSingle(),
           supabase
             .from("expert_profiles")
-            .select("headline, expertise, languages")
+            .select("headline, expertise, languages, job_title, company, degree, school")
             .eq("user_id", id)
             .maybeSingle(),
           supabase
@@ -80,15 +80,20 @@ function PublicExpertProfile() {
           setNotFound(true);
           return;
         }
+        const e = (expert ?? {}) as any;
         setData({
           id: profile.id,
           display_name: profile.display_name,
           avatar_url: profile.avatar_url,
           bio: profile.bio,
           location: profile.location,
-          headline: expert?.headline ?? null,
-          expertise: expert?.expertise ?? null,
-          languages: expert?.languages ?? null,
+          headline: e.headline ?? null,
+          expertise: e.expertise ?? null,
+          languages: e.languages ?? null,
+          job_title: e.job_title ?? null,
+          company: e.company ?? null,
+          degree: e.degree ?? null,
+          school: e.school ?? null,
           episodes_count: count ?? 0,
         });
       } finally {
