@@ -113,9 +113,13 @@ function ExpertProfilePage() {
         {
           user_id: user.id,
           headline: headline || null,
+          job_title: jobTitle || null,
+          company: company || null,
+          degree: degree || null,
+          school: school || null,
           expertise: topics.length ? (topics as unknown as never) : null,
           languages: langArray.length ? langArray : null,
-        },
+        } as any,
         { onConflict: "user_id" },
       );
 
