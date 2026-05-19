@@ -66,6 +66,10 @@ function ExpertProfilePage() {
       }
       if (expert) {
         setHeadline(expert.headline ?? "");
+        setJobTitle((expert as any).job_title ?? "");
+        setCompany((expert as any).company ?? "");
+        setDegree((expert as any).degree ?? "");
+        setSchool((expert as any).school ?? "");
         setTopics(Array.isArray(expert.expertise) ? expert.expertise : parseTopics(expert.expertise as unknown as string));
         setLanguages((expert.languages ?? []).join(", "));
       }
