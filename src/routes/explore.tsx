@@ -188,6 +188,41 @@ function Explore() {
               </div>
             </div>
             <div className="mt-6">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-medium text-muted-foreground">
+                  Filtrer par langue
+                </h2>
+                {selectedLanguages.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedLanguages([])}
+                    className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                  >
+                    <X className="h-3 w-3" /> Réinitialiser ({selectedLanguages.length})
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {LANGUAGES.map((lang) => {
+                  const active = selectedLanguages.includes(lang);
+                  return (
+                    <Badge
+                      key={lang}
+                      variant={active ? "default" : "outline"}
+                      onClick={() => toggleLanguage(lang)}
+                      className={`cursor-pointer select-none transition-colors px-3 py-1 text-xs ${
+                        active
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "hover:bg-accent"
+                      }`}
+                    >
+                      {lang}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="mt-6">
               {loading ? (
                 <LoadingState />
               ) : error ? (
