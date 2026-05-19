@@ -30,7 +30,7 @@ interface ProfileData {
   company: string | null;
   degree: string | null;
   school: string | null;
-  degree_year: number | null;
+  graduation_year: number | null;
   episodes_count: number;
 }
 
@@ -66,7 +66,7 @@ function PublicExpertProfile() {
             .maybeSingle(),
           supabase
             .from("expert_profiles")
-            .select("headline, expertise, languages, job_title, company, degree, school, degree_year")
+            .select("headline, expertise, languages, job_title, company, degree, school, graduation_year")
             .eq("user_id", id)
             .maybeSingle(),
           supabase
@@ -95,7 +95,7 @@ function PublicExpertProfile() {
           company: e.company ?? null,
           degree: e.degree ?? null,
           school: e.school ?? null,
-          degree_year: e.degree_year ?? null,
+          graduation_year: e.graduation_year ?? null,
           episodes_count: count ?? 0,
         });
       } finally {
@@ -254,11 +254,11 @@ function PublicExpertProfile() {
                   {data.degree && (
                     <p className="font-display font-semibold truncate">{data.degree}</p>
                   )}
-                  {(data.school || data.degree_year) && (
+                  {(data.school || data.graduation_year) && (
                     <p className="text-sm text-muted-foreground truncate">
                       {data.school}
-                      {data.school && data.degree_year ? " · " : ""}
-                      {data.degree_year ?? ""}
+                      {data.school && data.graduation_year ? " · " : ""}
+                      {data.graduation_year ?? ""}
                     </p>
                   )}
                 </div>

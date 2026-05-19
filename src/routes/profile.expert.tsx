@@ -66,7 +66,7 @@ function ExpertProfilePage() {
           .maybeSingle(),
         supabase
           .from("expert_profiles")
-          .select("headline, expertise, languages, job_title, company, degree, school, degree_year")
+          .select("headline, expertise, languages, job_title, company, degree, school, graduation_year")
           .eq("user_id", user.id)
           .maybeSingle(),
       ]);
@@ -82,7 +82,7 @@ function ExpertProfilePage() {
         setCompany((expert as any).company ?? "");
         setDegree((expert as any).degree ?? "");
         setSchool((expert as any).school ?? "");
-        setDegreeYear((expert as any).degree_year ? String((expert as any).degree_year) : "");
+        setDegreeYear((expert as any).graduation_year ? String((expert as any).graduation_year) : "");
         setTopics(Array.isArray(expert.expertise) ? expert.expertise : parseTopics(expert.expertise as unknown as string));
         setLanguages((expert.languages ?? []).join(", "));
       }
@@ -130,7 +130,7 @@ function ExpertProfilePage() {
           company: company || null,
           degree: degree || null,
           school: school || null,
-          degree_year: degreeYear ? Number(degreeYear) : null,
+          graduation_year: degreeYear ? Number(degreeYear) : null,
           expertise: topics.length ? (topics as unknown as never) : null,
           languages: langArray.length ? langArray : null,
         } as any,
