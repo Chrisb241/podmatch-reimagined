@@ -58,6 +58,16 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-3">
           {user ? (
             <>
+              <Link to="/messages" className="relative" aria-label="Messagerie">
+                <Button variant="ghost" size="sm" className="relative">
+                  <MessageSquare className="h-5 w-5" />
+                  {unreadTotal > 0 && (
+                    <span className="absolute -top-1 -right-1">
+                      <UnreadBadge count={unreadTotal} />
+                    </span>
+                  )}
+                </Button>
+              </Link>
               <Link to={dashboardPath}>
                 <Button variant="ghost" size="sm">Dashboard</Button>
               </Link>
