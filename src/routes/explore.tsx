@@ -72,7 +72,7 @@ function Explore() {
         !q ||
         e.display_name?.toLowerCase().includes(q) ||
         e.headline?.toLowerCase().includes(q) ||
-        e.expertise?.toLowerCase().includes(q) ||
+        parseTopics(e.expertise).some((t) => t.toLowerCase().includes(q)) ||
         e.bio?.toLowerCase().includes(q);
       if (!matchesQuery) return false;
       if (selectedTopics.length === 0) return true;
