@@ -35,16 +35,17 @@ export async function createContactRequest(input: {
   subject: string;
   message: string;
 }): Promise<ContactRequest> {
-  const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) throw new Error("Vous devez être connecté");
-  if (auth.user.id === input.recipient_id) {
+  const { data: sessionData } = await supabase.auth.getSession();
+  const currentUser = sessionData.session?.user;
+  if (!currentUser) throw new Error("Vous devez être connecté");
+  if (currentUser.id === input.recipient_id) {
     throw new Error("Vous ne pouvez pas vous contacter vous-même");
   }
 
   const { data, error } = await supabase
     .from("contact_requests")
     .insert({
-      sender_id: auth.user.id,
+      sender_id: currentUser.id,
       recipient_id: input.recipient_id,
       subject: input.subject.trim() || null,
       message: input.message.trim() || null,
@@ -146,13 +147,14 @@ export async function sendMessage(input: {
   contact_request_id: string;
   content: string;
 }): Promise<Message> {
-  const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) throw new Error("Vous devez être connecté");
+  const { data: sessionData } = await supabase.auth.getSession();
+  const userId = sessionData.session?.user.id;
+  if (!userId) throw new Error("Vous devez être connecté");
   const { data, error } = await supabase
     .from("messages")
     .insert({
       contact_request_id: input.contact_request_id,
-      sender_id: auth.user.id,
+      sender_id: userId,
       content: input.content.trim(),
     })
     .select()
