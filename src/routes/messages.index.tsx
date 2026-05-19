@@ -104,6 +104,9 @@ function MessagesPage() {
           setMessages((prev) =>
             prev.some((x) => x.id === m.id) ? prev : [...prev, m],
           );
+          if (user && m.sender_id !== user.id) {
+            markConversationRead(activeId, user.id).catch(() => {});
+          }
         },
       )
       .subscribe();
