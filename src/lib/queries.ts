@@ -4,7 +4,7 @@ export interface ExpertWithProfile {
   id: string;
   user_id: string;
   headline: string | null;
-  expertise: string | null;
+  expertise: string | string[] | null;
   languages: string[] | null;
   display_name: string | null;
   avatar_url: string | null;
