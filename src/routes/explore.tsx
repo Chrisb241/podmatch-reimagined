@@ -82,12 +82,17 @@ function Explore() {
         parseTopics(e.expertise).some((t) => t.toLowerCase().includes(q)) ||
         e.bio?.toLowerCase().includes(q);
       if (!matchesQuery) return false;
-      if (selectedTopics.length === 0) return true;
-      const expertTopics = parseTopics(e.expertise).map((t) => t.toLowerCase());
-      // ET logique : l'expert doit posséder TOUTES les thématiques sélectionnées
-      return selectedTopics.every((t) => expertTopics.includes(t.toLowerCase()));
+      if (selectedTopics.length > 0) {
+        const expertTopics = parseTopics(e.expertise).map((t) => t.toLowerCase());
+        if (!selectedTopics.every((t) => expertTopics.includes(t.toLowerCase()))) return false;
+      }
+      if (selectedLanguages.length > 0) {
+        const expertLangs = (e.languages ?? []).map((l) => l.toLowerCase());
+        if (!selectedLanguages.every((l) => expertLangs.includes(l.toLowerCase()))) return false;
+      }
+      return true;
     });
-  }, [experts, search, selectedTopics]);
+  }, [experts, search, selectedTopics, selectedLanguages]);
 
   const filteredPodcasts = useMemo(() => {
     if (!podcasts) return [];
