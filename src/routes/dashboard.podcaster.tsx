@@ -106,9 +106,12 @@ function PodcasterDashboard() {
               Trouvez un lieu pour vos enregistrements
             </p>
           </Link>
-          <Link to="/messages" className="p-6 rounded-xl border hover:border-primary transition-all">
+          <Link to="/messages" className="relative p-6 rounded-xl border hover:border-primary transition-all">
             <MessageSquare className="h-8 w-8 text-primary mb-3" />
-            <h3 className="font-semibold text-lg">Mes conversations</h3>
+            <h3 className="font-semibold text-lg flex items-center gap-2">
+              Mes conversations
+              {unreadTotal > 0 && <UnreadBadge count={unreadTotal} />}
+            </h3>
             <p className="text-sm text-muted-foreground mt-1">
               Accéder à votre messagerie
             </p>
