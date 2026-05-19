@@ -212,7 +212,7 @@ function ExpertProfilePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="degree">Diplôme</Label>
               <Input
@@ -229,6 +229,19 @@ function ExpertProfilePage() {
                 placeholder="Ex : HEC Paris"
                 value={school}
                 onChange={(e) => setSchool(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="degreeYear">Année d'obtention</Label>
+              <Input
+                id="degreeYear"
+                type="number"
+                inputMode="numeric"
+                min={1950}
+                max={new Date().getFullYear() + 1}
+                placeholder="Ex : 2018"
+                value={degreeYear}
+                onChange={(e) => setDegreeYear(e.target.value.replace(/[^0-9]/g, "").slice(0, 4))}
               />
             </div>
           </div>
