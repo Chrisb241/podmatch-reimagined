@@ -94,13 +94,16 @@ function LieuDetail() {
                 </p>
               )}
               {lieu.description && <p className="mt-6 text-base leading-relaxed whitespace-pre-line">{lieu.description}</p>}
-              {lieu.website && (
-                <Button className="mt-8" asChild>
-                  <a href={lieu.website} target="_blank" rel="noopener noreferrer">
-                    Visiter le site <ExternalLink className="h-4 w-4 ml-1.5" />
-                  </a>
-                </Button>
-              )}
+              <div className="mt-8 flex flex-wrap gap-3">
+                {lieu.website && (
+                  <Button asChild>
+                    <a href={lieu.website} target="_blank" rel="noopener noreferrer">
+                      Visiter le site <ExternalLink className="h-4 w-4 ml-1.5" />
+                    </a>
+                  </Button>
+                )}
+                <ShareLieuDialog lieuId={lieu.id} lieuName={lieu.name} />
+              </div>
             </>
           )}
         </div>
