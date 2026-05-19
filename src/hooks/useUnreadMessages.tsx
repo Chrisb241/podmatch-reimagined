@@ -71,6 +71,22 @@ export function useUnreadMessages() {
   }, [refresh]);
 
   useEffect(() => {
+    const onRead = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { requestId?: string };
+      if (!detail?.requestId) return;
+      setState((prev) => {
+        if (!prev.byConversation[detail.requestId!]) return prev;
+        const next = { ...prev.byConversation };
+        const removed = next[detail.requestId!] ?? 0;
+        delete next[detail.requestId!];
+        return { total: Math.max(0, prev.total - removed), byConversation: next };
+      });
+    };
+    window.addEventListener("pm:conversation-read", onRead);
+    return () => window.removeEventListener("pm:conversation-read", onRead);
+  }, []);
+
+  useEffect(() => {
     if (!user) return;
     const channel = supabase
       .channel(`unread-messages:${user.id}`)
