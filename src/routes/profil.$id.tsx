@@ -66,7 +66,7 @@ function PublicExpertProfile() {
             .maybeSingle(),
           supabase
             .from("expert_profiles")
-            .select("headline, expertise, languages, job_title, company, degree, school")
+            .select("headline, expertise, languages, job_title, company, degree, school, degree_year")
             .eq("user_id", id)
             .maybeSingle(),
           supabase
