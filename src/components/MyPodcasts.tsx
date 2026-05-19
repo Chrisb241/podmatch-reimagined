@@ -1,5 +1,5 @@
-import { useEffect, useState, type FormEvent } from "react";
-import { Loader2, Mic, Plus, ExternalLink, Trash2 } from "lucide-react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Loader2, Mic, Plus, ExternalLink, Trash2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,6 +35,38 @@ const MyPodcasts = () => {
   const [description, setDescription] = useState("");
   const [coverUrl, setCoverUrl] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Veuillez choisir une image");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image trop volumineuse (max 5 Mo)");
+      return;
+    }
+    try {
+      setUploading(true);
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${user.id}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("podcast-covers")
+        .upload(path, file, { upsert: false, contentType: file.type });
+      if (upErr) throw upErr;
+      const { data } = supabase.storage.from("podcast-covers").getPublicUrl(path);
+      setCoverUrl(data.publicUrl);
+      toast.success("Image importée");
+    } catch (err: any) {
+      toast.error(err.message ?? "Erreur d'import");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
   const load = async () => {
     if (!user) return;
@@ -131,14 +163,47 @@ const MyPodcasts = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="p-cover">URL de la cover</Label>
-                <Input
-                  id="p-cover"
-                  type="url"
-                  value={coverUrl}
-                  onChange={(e) => setCoverUrl(e.target.value)}
-                  placeholder="https://..."
+                <Label>Image de couverture</Label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
                 />
+                {coverUrl ? (
+                  <div className="mt-2 relative inline-block">
+                    <img
+                      src={coverUrl}
+                      alt="cover"
+                      className="h-24 w-24 rounded-lg object-cover border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setCoverUrl("")}
+                      className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center shadow"
+                      aria-label="Retirer"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="mt-2"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                  >
+                    {uploading ? (
+                      <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                    ) : (
+                      <Upload className="h-4 w-4 mr-1" />
+                    )}
+                    Importer une image
+                  </Button>
+                )}
               </div>
               <div>
                 <Label htmlFor="p-web">Site web</Label>
