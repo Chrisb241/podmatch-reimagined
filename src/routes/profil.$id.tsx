@@ -26,6 +26,10 @@ interface ProfileData {
   headline: string | null;
   expertise: string | null;
   languages: string[] | null;
+  job_title: string | null;
+  company: string | null;
+  degree: string | null;
+  school: string | null;
   episodes_count: number;
 }
 
