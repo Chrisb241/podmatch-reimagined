@@ -109,6 +109,12 @@ export function useUnreadMessages() {
           const m = payload.new as any;
           if (m.sender_id === user.id) return;
           if (m.read_at) return;
+          if (!conversationIdsRef.current.has(m.contact_request_id)) {
+            refresh();
+            return;
+          }
+          lastReadRef.current = loadLastRead(user.id);
+          if (isLocallyRead(m, lastReadRef.current)) return;
           setState((prev) => {
             const next = { ...prev.byConversation };
             next[m.contact_request_id] = (next[m.contact_request_id] ?? 0) + 1;
@@ -137,14 +143,15 @@ export function useUnreadMessages() {
 
 export async function markConversationRead(requestId: string, userId: string) {
   // Optimistic local store — independent of RLS
-  const map = loadLastRead();
-  map[requestId] = new Date().toISOString();
-  saveLastRead(map);
+  const readAt = new Date(Date.now() + 1000).toISOString();
+  const map = loadLastRead(userId);
+  map[requestId] = readAt;
+  saveLastRead(map, userId);
   // Best-effort DB update
   try {
     await supabase
       .from("messages")
-      .update({ read_at: new Date().toISOString() })
+      .update({ read_at: readAt })
       .eq("contact_request_id", requestId)
       .neq("sender_id", userId)
       .is("read_at", null);
