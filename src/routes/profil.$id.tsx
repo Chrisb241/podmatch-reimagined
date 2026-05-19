@@ -219,6 +219,48 @@ function PublicExpertProfile() {
           )}
         </div>
 
+        {/* Métier & Formation */}
+        {(data.job_title || data.company || data.degree || data.school) && (
+          <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {(data.job_title || data.company) && (
+              <div className="bg-card border rounded-2xl p-5 shadow-card flex gap-4">
+                <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <Briefcase className="h-5 w-5 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                    Métier actuel
+                  </p>
+                  {data.job_title && (
+                    <p className="font-display font-semibold truncate">{data.job_title}</p>
+                  )}
+                  {data.company && (
+                    <p className="text-sm text-muted-foreground truncate">{data.company}</p>
+                  )}
+                </div>
+              </div>
+            )}
+            {(data.degree || data.school) && (
+              <div className="bg-card border rounded-2xl p-5 shadow-card flex gap-4">
+                <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <GraduationCap className="h-5 w-5 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                    Formation
+                  </p>
+                  {data.degree && (
+                    <p className="font-display font-semibold truncate">{data.degree}</p>
+                  )}
+                  {data.school && (
+                    <p className="text-sm text-muted-foreground truncate">{data.school}</p>
+                  )}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
         {/* Bio */}
         {data.bio && (
           <section className="mt-8">
