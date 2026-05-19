@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
-import { ArrowLeft, Mic2 } from "lucide-react";
+import { ArrowLeft, Mic2, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { TOPICS, parseTopics, serializeTopics } from "@/lib/topics";
 import { toast } from "sonner";
 
@@ -304,6 +315,55 @@ function ExpertProfilePage() {
             {saving ? "Enregistrement…" : "Enregistrer"}
           </Button>
         </form>
+
+        {/* Zone danger : suppression de compte */}
+        <div className="mt-16 border-t pt-8">
+          <h2 className="text-lg font-display font-bold text-destructive">Zone dangereuse</h2>
+          <p className="text-sm text-muted-foreground mt-1 mb-4">
+            La suppression de votre compte est définitive. Toutes vos données (profil, expertise,
+            demandes, messages) seront effacées.
+          </p>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">
+                <Trash2 className="h-4 w-4 mr-2" /> Supprimer mon compte
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Supprimer définitivement votre compte ?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Cette action est irréversible. Vos données seront immédiatement supprimées et
+                  vous serez déconnecté.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  onClick={async () => {
+                    if (!user) return;
+                    try {
+                      await supabase.from("expert_profiles").delete().eq("user_id", user.id);
+                      const { error } = await supabase
+                        .from("profiles")
+                        .delete()
+                        .eq("id", user.id);
+                      if (error) throw error;
+                      await supabase.auth.signOut();
+                      toast.success("Votre compte a été supprimé.");
+                      navigate({ to: "/" });
+                    } catch (err: any) {
+                      toast.error(`Suppression impossible : ${err.message ?? err}`);
+                    }
+                  }}
+                >
+                  Supprimer définitivement
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </main>
     </div>
   );
