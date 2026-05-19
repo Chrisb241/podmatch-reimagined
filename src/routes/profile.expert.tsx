@@ -177,6 +177,48 @@ function ExpertProfilePage() {
             />
           </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="jobTitle">Métier actuel</Label>
+              <Input
+                id="jobTitle"
+                placeholder="Ex : Designer produit"
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="company">Entreprise</Label>
+              <Input
+                id="company"
+                placeholder="Ex : Acme Inc."
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="degree">Diplôme</Label>
+              <Input
+                id="degree"
+                placeholder="Ex : Master en Marketing"
+                value={degree}
+                onChange={(e) => setDegree(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="school">École / Université</Label>
+              <Input
+                id="school"
+                placeholder="Ex : HEC Paris"
+                value={school}
+                onChange={(e) => setSchool(e.target.value)}
+              />
+            </div>
+          </div>
+
           <div>
             <Label htmlFor="bio">Bio</Label>
             <Textarea
