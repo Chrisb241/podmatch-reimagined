@@ -142,9 +142,11 @@ function Venues() {
             {!loading && filtered.length > 0 ? (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map((l) => (
-                  <div
+                  <Link
                     key={l.id}
-                    className="group bg-card rounded-xl border shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden flex flex-col"
+                    to="/lieux/$id"
+                    params={{ id: l.id }}
+                    className="group bg-card rounded-xl border shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden flex flex-col text-left"
                   >
                     {(() => {
                       const styles: Record<string, { bg: string; Icon: typeof MapPin }> = {
