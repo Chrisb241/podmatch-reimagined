@@ -9,39 +9,54 @@ interface UnreadState {
 
 const LS_KEY = "pm:lastReadAt";
 
-function loadLastRead(): Record<string, string> {
+function storageKey(userId?: string) {
+  return userId ? `${LS_KEY}:${userId}` : LS_KEY;
+}
+
+function loadLastRead(userId?: string): Record<string, string> {
   try {
-    return JSON.parse(localStorage.getItem(LS_KEY) || "{}");
+    if (typeof localStorage === "undefined") return {};
+    const legacy = JSON.parse(localStorage.getItem(LS_KEY) || "{}");
+    const scoped = userId ? JSON.parse(localStorage.getItem(storageKey(userId)) || "{}") : {};
+    return { ...legacy, ...scoped };
   } catch {
     return {};
   }
 }
 
-function saveLastRead(map: Record<string, string>) {
+function saveLastRead(map: Record<string, string>, userId?: string) {
   try {
-    localStorage.setItem(LS_KEY, JSON.stringify(map));
+    if (typeof localStorage === "undefined") return;
+    localStorage.setItem(storageKey(userId), JSON.stringify(map));
   } catch {
     /* ignore */
   }
+}
+
+function isLocallyRead(message: { contact_request_id: string; created_at: string }, reads: Record<string, string>) {
+  const lastRead = reads[message.contact_request_id];
+  return !!lastRead && new Date(lastRead).getTime() >= new Date(message.created_at).getTime();
 }
 
 export function useUnreadMessages() {
   const { user } = useAuth();
   const [state, setState] = useState<UnreadState>({ total: 0, byConversation: {} });
   const lastReadRef = useRef<Record<string, string>>({});
+  const conversationIdsRef = useRef<Set<string>>(new Set());
 
   const refresh = useCallback(async () => {
     if (!user) {
       setState({ total: 0, byConversation: {} });
       return;
     }
-    lastReadRef.current = loadLastRead();
+    lastReadRef.current = loadLastRead(user.id);
     const { data: reqs } = await supabase
       .from("contact_requests")
       .select("id")
       .eq("status", "accepted")
       .or(`sender_id.eq.${user.id},recipient_id.eq.${user.id}`);
     const ids = (reqs ?? []).map((r: any) => r.id);
+    conversationIdsRef.current = new Set(ids);
     if (ids.length === 0) {
       setState({ total: 0, byConversation: {} });
       return;
@@ -54,10 +69,7 @@ export function useUnreadMessages() {
     const byConv: Record<string, number> = {};
     (msgs ?? []).forEach((m: any) => {
       // Considered read if DB read_at set OR localStorage lastRead >= message time
-      const lastRead = lastReadRef.current[m.contact_request_id];
-      const isRead =
-        !!m.read_at ||
-        (lastRead && new Date(lastRead).getTime() >= new Date(m.created_at).getTime());
+      const isRead = !!m.read_at || isLocallyRead(m, lastReadRef.current);
       if (!isRead) {
         byConv[m.contact_request_id] = (byConv[m.contact_request_id] ?? 0) + 1;
       }
