@@ -65,6 +65,8 @@ function MessagesPage() {
         setRequest(r);
         const msgs = await fetchMessages(requestId);
         if (!cancelled) setMessages(msgs);
+        // Mark conversation as read on open
+        markConversationRead(requestId, user.id).catch(() => {});
       } catch (err: any) {
         toast.error(err.message ?? "Erreur de chargement");
       } finally {
