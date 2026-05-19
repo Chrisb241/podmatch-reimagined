@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink, Laptop, MapPin, Mic, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { ShareLieuDialog } from "@/components/ShareLieuDialog";
 
 export const Route = createFileRoute("/lieux/$id")({
   component: LieuDetail,
