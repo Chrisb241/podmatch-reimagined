@@ -209,14 +209,14 @@ function Venues() {
                           className="w-full mt-4"
                           asChild
                         >
-                          <a href={l.website} target="_blank" rel="noopener noreferrer">
+                          <a href={l.website} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
                             Visiter le site
                             <ExternalLink className="h-3 w-3 ml-1.5" />
                           </a>
                         </Button>
                       )}
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             ) : !loading ? (
