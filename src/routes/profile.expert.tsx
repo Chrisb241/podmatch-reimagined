@@ -130,6 +130,7 @@ function ExpertProfilePage() {
           company: company || null,
           degree: degree || null,
           school: school || null,
+          degree_year: degreeYear ? Number(degreeYear) : null,
           expertise: topics.length ? (topics as unknown as never) : null,
           languages: langArray.length ? langArray : null,
         } as any,
