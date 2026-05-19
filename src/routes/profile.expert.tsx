@@ -25,6 +25,10 @@ function ExpertProfilePage() {
   const [location, setLocation] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [headline, setHeadline] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [company, setCompany] = useState("");
+  const [degree, setDegree] = useState("");
+  const [school, setSchool] = useState("");
   const [topics, setTopics] = useState<string[]>([]);
   const [languages, setLanguages] = useState("");
   const [saving, setSaving] = useState(false);
@@ -50,7 +54,7 @@ function ExpertProfilePage() {
           .maybeSingle(),
         supabase
           .from("expert_profiles")
-          .select("headline, expertise, languages")
+          .select("headline, expertise, languages, job_title, company, degree, school")
           .eq("user_id", user.id)
           .maybeSingle(),
       ]);
@@ -62,6 +66,10 @@ function ExpertProfilePage() {
       }
       if (expert) {
         setHeadline(expert.headline ?? "");
+        setJobTitle((expert as any).job_title ?? "");
+        setCompany((expert as any).company ?? "");
+        setDegree((expert as any).degree ?? "");
+        setSchool((expert as any).school ?? "");
         setTopics(Array.isArray(expert.expertise) ? expert.expertise : parseTopics(expert.expertise as unknown as string));
         setLanguages((expert.languages ?? []).join(", "));
       }
@@ -105,9 +113,13 @@ function ExpertProfilePage() {
         {
           user_id: user.id,
           headline: headline || null,
+          job_title: jobTitle || null,
+          company: company || null,
+          degree: degree || null,
+          school: school || null,
           expertise: topics.length ? (topics as unknown as never) : null,
           languages: langArray.length ? langArray : null,
-        },
+        } as any,
         { onConflict: "user_id" },
       );
 
@@ -163,6 +175,48 @@ function ExpertProfilePage() {
               value={headline}
               onChange={(e) => setHeadline(e.target.value)}
             />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="jobTitle">Métier actuel</Label>
+              <Input
+                id="jobTitle"
+                placeholder="Ex : Designer produit"
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="company">Entreprise</Label>
+              <Input
+                id="company"
+                placeholder="Ex : Acme Inc."
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="degree">Diplôme</Label>
+              <Input
+                id="degree"
+                placeholder="Ex : Master en Marketing"
+                value={degree}
+                onChange={(e) => setDegree(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="school">École / Université</Label>
+              <Input
+                id="school"
+                placeholder="Ex : HEC Paris"
+                value={school}
+                onChange={(e) => setSchool(e.target.value)}
+              />
+            </div>
           </div>
 
           <div>

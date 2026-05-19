@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, MapPin, User, Mic2, Loader2, Send } from "lucide-react";
+import { ArrowLeft, MapPin, User, Mic2, Loader2, Send, Briefcase, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +26,10 @@ interface ProfileData {
   headline: string | null;
   expertise: string | null;
   languages: string[] | null;
+  job_title: string | null;
+  company: string | null;
+  degree: string | null;
+  school: string | null;
   episodes_count: number;
 }
 
@@ -61,7 +65,7 @@ function PublicExpertProfile() {
             .maybeSingle(),
           supabase
             .from("expert_profiles")
-            .select("headline, expertise, languages")
+            .select("headline, expertise, languages, job_title, company, degree, school")
             .eq("user_id", id)
             .maybeSingle(),
           supabase
@@ -76,15 +80,20 @@ function PublicExpertProfile() {
           setNotFound(true);
           return;
         }
+        const e = (expert ?? {}) as any;
         setData({
           id: profile.id,
           display_name: profile.display_name,
           avatar_url: profile.avatar_url,
           bio: profile.bio,
           location: profile.location,
-          headline: expert?.headline ?? null,
-          expertise: expert?.expertise ?? null,
-          languages: expert?.languages ?? null,
+          headline: e.headline ?? null,
+          expertise: e.expertise ?? null,
+          languages: e.languages ?? null,
+          job_title: e.job_title ?? null,
+          company: e.company ?? null,
+          degree: e.degree ?? null,
+          school: e.school ?? null,
           episodes_count: count ?? 0,
         });
       } finally {
@@ -209,6 +218,48 @@ function PublicExpertProfile() {
             </div>
           )}
         </div>
+
+        {/* Métier & Formation */}
+        {(data.job_title || data.company || data.degree || data.school) && (
+          <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {(data.job_title || data.company) && (
+              <div className="bg-card border rounded-2xl p-5 shadow-card flex gap-4">
+                <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <Briefcase className="h-5 w-5 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                    Métier actuel
+                  </p>
+                  {data.job_title && (
+                    <p className="font-display font-semibold truncate">{data.job_title}</p>
+                  )}
+                  {data.company && (
+                    <p className="text-sm text-muted-foreground truncate">{data.company}</p>
+                  )}
+                </div>
+              </div>
+            )}
+            {(data.degree || data.school) && (
+              <div className="bg-card border rounded-2xl p-5 shadow-card flex gap-4">
+                <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <GraduationCap className="h-5 w-5 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                    Formation
+                  </p>
+                  {data.degree && (
+                    <p className="font-display font-semibold truncate">{data.degree}</p>
+                  )}
+                  {data.school && (
+                    <p className="text-sm text-muted-foreground truncate">{data.school}</p>
+                  )}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
 
         {/* Bio */}
         {data.bio && (
