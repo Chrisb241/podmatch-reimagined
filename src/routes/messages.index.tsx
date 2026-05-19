@@ -13,6 +13,7 @@ import {
   type ContactRequestWithProfile,
   type Message,
 } from "@/lib/contact";
+import { markConversationRead } from "@/hooks/useUnreadMessages";
 
 export const Route = createFileRoute("/messages/")({
   head: () => ({
