@@ -95,6 +95,7 @@ function PublicExpertProfile() {
           company: e.company ?? null,
           degree: e.degree ?? null,
           school: e.school ?? null,
+          degree_year: e.degree_year ?? null,
           episodes_count: count ?? 0,
         });
       } finally {
