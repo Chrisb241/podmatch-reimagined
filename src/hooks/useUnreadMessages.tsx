@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -7,16 +7,35 @@ interface UnreadState {
   byConversation: Record<string, number>;
 }
 
+const LS_KEY = "pm:lastReadAt";
+
+function loadLastRead(): Record<string, string> {
+  try {
+    return JSON.parse(localStorage.getItem(LS_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function saveLastRead(map: Record<string, string>) {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(map));
+  } catch {
+    /* ignore */
+  }
+}
+
 export function useUnreadMessages() {
   const { user } = useAuth();
   const [state, setState] = useState<UnreadState>({ total: 0, byConversation: {} });
+  const lastReadRef = useRef<Record<string, string>>({});
 
   const refresh = useCallback(async () => {
     if (!user) {
       setState({ total: 0, byConversation: {} });
       return;
     }
-    // Get conversations where user is participant
+    lastReadRef.current = loadLastRead();
     const { data: reqs } = await supabase
       .from("contact_requests")
       .select("id")
@@ -29,13 +48,19 @@ export function useUnreadMessages() {
     }
     const { data: msgs } = await supabase
       .from("messages")
-      .select("contact_request_id")
+      .select("contact_request_id, sender_id, created_at, read_at")
       .in("contact_request_id", ids)
-      .is("read_at", null)
       .neq("sender_id", user.id);
     const byConv: Record<string, number> = {};
     (msgs ?? []).forEach((m: any) => {
-      byConv[m.contact_request_id] = (byConv[m.contact_request_id] ?? 0) + 1;
+      // Considered read if DB read_at set OR localStorage lastRead >= message time
+      const lastRead = lastReadRef.current[m.contact_request_id];
+      const isRead =
+        !!m.read_at ||
+        (lastRead && new Date(lastRead).getTime() >= new Date(m.created_at).getTime());
+      if (!isRead) {
+        byConv[m.contact_request_id] = (byConv[m.contact_request_id] ?? 0) + 1;
+      }
     });
     const total = Object.values(byConv).reduce((a, b) => a + b, 0);
     setState({ total, byConversation: byConv });
@@ -59,27 +84,19 @@ export function useUnreadMessages() {
           setState((prev) => {
             const next = { ...prev.byConversation };
             next[m.contact_request_id] = (next[m.contact_request_id] ?? 0) + 1;
-            return {
-              total: prev.total + 1,
-              byConversation: next,
-            };
+            return { total: prev.total + 1, byConversation: next };
           });
         },
       )
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "messages" },
-        () => {
-          // A message was marked as read; recompute.
-          refresh();
-        },
+        () => refresh(),
       )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "contact_requests" },
-        () => {
-          refresh();
-        },
+        () => refresh(),
       )
       .subscribe();
     return () => {
@@ -91,10 +108,25 @@ export function useUnreadMessages() {
 }
 
 export async function markConversationRead(requestId: string, userId: string) {
-  await supabase
-    .from("messages")
-    .update({ read_at: new Date().toISOString() })
-    .eq("contact_request_id", requestId)
-    .neq("sender_id", userId)
-    .is("read_at", null);
+  // Optimistic local store — independent of RLS
+  const map = loadLastRead();
+  map[requestId] = new Date().toISOString();
+  saveLastRead(map);
+  // Best-effort DB update
+  try {
+    await supabase
+      .from("messages")
+      .update({ read_at: new Date().toISOString() })
+      .eq("contact_request_id", requestId)
+      .neq("sender_id", userId)
+      .is("read_at", null);
+  } catch {
+    /* ignore — local store covers it */
+  }
+  // Notify other tabs / hook instances
+  try {
+    window.dispatchEvent(new CustomEvent("pm:conversation-read", { detail: { requestId } }));
+  } catch {
+    /* ignore */
+  }
 }
