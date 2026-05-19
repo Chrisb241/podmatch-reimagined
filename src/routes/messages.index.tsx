@@ -74,6 +74,7 @@ function MessagesPage() {
         setLoadingMsgs(true);
         const msgs = await fetchMessages(activeId);
         if (!cancelled) setMessages(msgs);
+        if (user) markConversationRead(activeId, user.id).catch(() => {});
       } catch (err: any) {
         toast.error(err.message ?? "Erreur de chargement");
       } finally {
@@ -83,7 +84,7 @@ function MessagesPage() {
     return () => {
       cancelled = true;
     };
-  }, [activeId]);
+  }, [activeId, user?.id]);
 
   // Realtime subscription for messages of active conversation
   useEffect(() => {
