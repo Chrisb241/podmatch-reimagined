@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Mic2, LogOut } from "lucide-react";
+import { Menu, X, Mic2, LogOut, MessageSquare } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { UnreadBadge } from "@/components/UnreadBadge";
 
 const navLinks = [
   { label: "Accueil", path: "/" as const },
