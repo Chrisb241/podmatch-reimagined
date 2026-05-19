@@ -14,6 +14,8 @@ import {
 import ReceivedRequests from "@/components/ReceivedRequests";
 import ActiveConversations from "@/components/ActiveConversations";
 import { useDashboardStats, StatCard } from "@/components/DashboardStats";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { UnreadBadge } from "@/components/UnreadBadge";
 
 export const Route = createFileRoute("/dashboard/guest")({
   head: () => ({
