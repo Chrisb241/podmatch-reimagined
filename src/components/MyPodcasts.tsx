@@ -163,14 +163,47 @@ const MyPodcasts = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="p-cover">URL de la cover</Label>
-                <Input
-                  id="p-cover"
-                  type="url"
-                  value={coverUrl}
-                  onChange={(e) => setCoverUrl(e.target.value)}
-                  placeholder="https://..."
+                <Label>Image de couverture</Label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
                 />
+                {coverUrl ? (
+                  <div className="mt-2 relative inline-block">
+                    <img
+                      src={coverUrl}
+                      alt="cover"
+                      className="h-24 w-24 rounded-lg object-cover border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setCoverUrl("")}
+                      className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center shadow"
+                      aria-label="Retirer"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="mt-2"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                  >
+                    {uploading ? (
+                      <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                    ) : (
+                      <Upload className="h-4 w-4 mr-1" />
+                    )}
+                    Importer une image
+                  </Button>
+                )}
               </div>
               <div>
                 <Label htmlFor="p-web">Site web</Label>
