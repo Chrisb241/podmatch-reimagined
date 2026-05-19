@@ -13,6 +13,7 @@ import {
   type Message,
 } from "@/lib/contact";
 import { markConversationRead } from "@/hooks/useUnreadMessages";
+import { MessageContent } from "@/components/LieuMessageCard";
 
 export const Route = createFileRoute("/messages/$requestId")({
   head: () => ({
