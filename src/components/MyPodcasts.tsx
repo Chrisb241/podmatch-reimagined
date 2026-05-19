@@ -35,6 +35,38 @@ const MyPodcasts = () => {
   const [description, setDescription] = useState("");
   const [coverUrl, setCoverUrl] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Veuillez choisir une image");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image trop volumineuse (max 5 Mo)");
+      return;
+    }
+    try {
+      setUploading(true);
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${user.id}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("podcast-covers")
+        .upload(path, file, { upsert: false, contentType: file.type });
+      if (upErr) throw upErr;
+      const { data } = supabase.storage.from("podcast-covers").getPublicUrl(path);
+      setCoverUrl(data.publicUrl);
+      toast.success("Image importée");
+    } catch (err: any) {
+      toast.error(err.message ?? "Erreur d'import");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
   const load = async () => {
     if (!user) return;
