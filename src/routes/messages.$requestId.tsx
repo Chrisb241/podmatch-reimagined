@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Loader2, Send, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import {
   fetchMessages,
   fetchRequest,
@@ -86,12 +87,38 @@ function MessagesPage() {
       try {
         const msgs = await fetchMessages(requestId);
         setMessages((prev) => (msgs.length !== prev.length ? msgs : prev));
+        if (user) markConversationRead(requestId, user.id).catch(() => {});
       } catch {
         // ignore polling errors
       }
     }, 5000);
     return () => clearInterval(interval);
-  }, [request, requestId]);
+  }, [request, requestId, user?.id]);
+
+  // Realtime subscription for this conversation
+  useEffect(() => {
+    if (!request || !user) return;
+    const channel = supabase
+      .channel(`messages:${requestId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `contact_request_id=eq.${requestId}`,
+        },
+        (payload) => {
+          const m = payload.new as Message;
+          setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
+          markConversationRead(requestId, user.id).catch(() => {});
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [request, requestId, user?.id]);
 
   // Auto-scroll on new message
   useEffect(() => {
