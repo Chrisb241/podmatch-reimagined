@@ -30,6 +30,7 @@ interface ProfileData {
   company: string | null;
   degree: string | null;
   school: string | null;
+  degree_year: number | null;
   episodes_count: number;
 }
 
