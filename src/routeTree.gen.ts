@@ -21,6 +21,7 @@ import { Route as MessagesIndexRouteImport } from './routes/messages.index'
 import { Route as ProfileExpertRouteImport } from './routes/profile.expert'
 import { Route as ProfilIdRouteImport } from './routes/profil.$id'
 import { Route as MessagesRequestIdRouteImport } from './routes/messages.$requestId'
+import { Route as LieuxIdRouteImport } from './routes/lieux.$id'
 import { Route as DashboardPodcasterRouteImport } from './routes/dashboard.podcaster'
 import { Route as DashboardGuestRouteImport } from './routes/dashboard.guest'
 import { Route as AuthSignupRouteImport } from './routes/auth.signup'
@@ -86,6 +87,11 @@ const MessagesRequestIdRoute = MessagesRequestIdRouteImport.update({
   path: '/messages/$requestId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LieuxIdRoute = LieuxIdRouteImport.update({
+  id: '/lieux/$id',
+  path: '/lieux/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardPodcasterRoute = DashboardPodcasterRouteImport.update({
   id: '/dashboard/podcaster',
   path: '/dashboard/podcaster',
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/auth/signup': typeof AuthSignupRoute
   '/dashboard/guest': typeof DashboardGuestRoute
   '/dashboard/podcaster': typeof DashboardPodcasterRoute
+  '/lieux/$id': typeof LieuxIdRoute
   '/messages/$requestId': typeof MessagesRequestIdRoute
   '/profil/$id': typeof ProfilIdRoute
   '/profile/expert': typeof ProfileExpertRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/auth/signup': typeof AuthSignupRoute
   '/dashboard/guest': typeof DashboardGuestRoute
   '/dashboard/podcaster': typeof DashboardPodcasterRoute
+  '/lieux/$id': typeof LieuxIdRoute
   '/messages/$requestId': typeof MessagesRequestIdRoute
   '/profil/$id': typeof ProfilIdRoute
   '/profile/expert': typeof ProfileExpertRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/auth/signup': typeof AuthSignupRoute
   '/dashboard/guest': typeof DashboardGuestRoute
   '/dashboard/podcaster': typeof DashboardPodcasterRoute
+  '/lieux/$id': typeof LieuxIdRoute
   '/messages/$requestId': typeof MessagesRequestIdRoute
   '/profil/$id': typeof ProfilIdRoute
   '/profile/expert': typeof ProfileExpertRoute
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/dashboard/guest'
     | '/dashboard/podcaster'
+    | '/lieux/$id'
     | '/messages/$requestId'
     | '/profil/$id'
     | '/profile/expert'
@@ -195,6 +205,7 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/dashboard/guest'
     | '/dashboard/podcaster'
+    | '/lieux/$id'
     | '/messages/$requestId'
     | '/profil/$id'
     | '/profile/expert'
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/dashboard/guest'
     | '/dashboard/podcaster'
+    | '/lieux/$id'
     | '/messages/$requestId'
     | '/profil/$id'
     | '/profile/expert'
@@ -232,6 +244,7 @@ export interface RootRouteChildren {
   AuthSignupRoute: typeof AuthSignupRoute
   DashboardGuestRoute: typeof DashboardGuestRoute
   DashboardPodcasterRoute: typeof DashboardPodcasterRoute
+  LieuxIdRoute: typeof LieuxIdRoute
   MessagesRequestIdRoute: typeof MessagesRequestIdRoute
   ProfilIdRoute: typeof ProfilIdRoute
   ProfileExpertRoute: typeof ProfileExpertRoute
@@ -324,6 +337,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MessagesRequestIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lieux/$id': {
+      id: '/lieux/$id'
+      path: '/lieux/$id'
+      fullPath: '/lieux/$id'
+      preLoaderRoute: typeof LieuxIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/podcaster': {
       id: '/dashboard/podcaster'
       path: '/dashboard/podcaster'
@@ -368,6 +388,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSignupRoute: AuthSignupRoute,
   DashboardGuestRoute: DashboardGuestRoute,
   DashboardPodcasterRoute: DashboardPodcasterRoute,
+  LieuxIdRoute: LieuxIdRoute,
   MessagesRequestIdRoute: MessagesRequestIdRoute,
   ProfilIdRoute: ProfilIdRoute,
   ProfileExpertRoute: ProfileExpertRoute,

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -142,9 +142,11 @@ function Venues() {
             {!loading && filtered.length > 0 ? (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map((l) => (
-                  <div
+                  <Link
                     key={l.id}
-                    className="group bg-card rounded-xl border shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden flex flex-col"
+                    to="/lieux/$id"
+                    params={{ id: l.id }}
+                    className="group bg-card rounded-xl border shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden flex flex-col text-left"
                   >
                     {(() => {
                       const styles: Record<string, { bg: string; Icon: typeof MapPin }> = {
@@ -207,14 +209,14 @@ function Venues() {
                           className="w-full mt-4"
                           asChild
                         >
-                          <a href={l.website} target="_blank" rel="noopener noreferrer">
+                          <a href={l.website} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
                             Visiter le site
                             <ExternalLink className="h-3 w-3 ml-1.5" />
                           </a>
                         </Button>
                       )}
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             ) : !loading ? (
