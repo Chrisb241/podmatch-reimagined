@@ -28,6 +28,7 @@ function GuestDashboard() {
   const { user, role, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const { stats } = useDashboardStats();
+  const { total: unreadTotal } = useUnreadMessages();
 
   useEffect(() => {
     if (loading) return;
