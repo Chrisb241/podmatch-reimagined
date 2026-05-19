@@ -25,6 +25,10 @@ function ExpertProfilePage() {
   const [location, setLocation] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [headline, setHeadline] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [company, setCompany] = useState("");
+  const [degree, setDegree] = useState("");
+  const [school, setSchool] = useState("");
   const [topics, setTopics] = useState<string[]>([]);
   const [languages, setLanguages] = useState("");
   const [saving, setSaving] = useState(false);
