@@ -105,7 +105,7 @@ function MessagesPage() {
           setMessages((prev) =>
             prev.some((x) => x.id === m.id) ? prev : [...prev, m],
           );
-          if (user && m.sender_id !== user.id) {
+          if (user) {
             markConversationRead(activeId, user.id).catch(() => {});
           }
         },
@@ -114,7 +114,7 @@ function MessagesPage() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [activeId]);
+  }, [activeId, user?.id]);
 
   // Realtime for new conversations / status updates
   useEffect(() => {
