@@ -15,6 +15,7 @@ import {
   type PodcastWithOwner,
 } from "@/lib/queries";
 import { TOPICS, parseTopics } from "@/lib/topics";
+import { LANGUAGES } from "@/lib/languages";
 
 export const Route = createFileRoute("/explore")({
   head: () => ({
@@ -32,6 +33,7 @@ function Explore() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<"experts" | "podcasts">("experts");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [experts, setExperts] = useState<ExpertWithProfile[] | null>(null);
   const [podcasts, setPodcasts] = useState<PodcastWithOwner[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,6 +42,11 @@ function Explore() {
   const toggleTopic = (topic: string) => {
     setSelectedTopics((prev) =>
       prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic],
+    );
+  };
+  const toggleLanguage = (lang: string) => {
+    setSelectedLanguages((prev) =>
+      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang],
     );
   };
 
