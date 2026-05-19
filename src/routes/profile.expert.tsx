@@ -40,6 +40,7 @@ function ExpertProfilePage() {
   const [company, setCompany] = useState("");
   const [degree, setDegree] = useState("");
   const [school, setSchool] = useState("");
+  const [degreeYear, setDegreeYear] = useState("");
   const [topics, setTopics] = useState<string[]>([]);
   const [languages, setLanguages] = useState("");
   const [saving, setSaving] = useState(false);
@@ -65,7 +66,7 @@ function ExpertProfilePage() {
           .maybeSingle(),
         supabase
           .from("expert_profiles")
-          .select("headline, expertise, languages, job_title, company, degree, school")
+          .select("headline, expertise, languages, job_title, company, degree, school, degree_year")
           .eq("user_id", user.id)
           .maybeSingle(),
       ]);
@@ -81,6 +82,7 @@ function ExpertProfilePage() {
         setCompany((expert as any).company ?? "");
         setDegree((expert as any).degree ?? "");
         setSchool((expert as any).school ?? "");
+        setDegreeYear((expert as any).degree_year ? String((expert as any).degree_year) : "");
         setTopics(Array.isArray(expert.expertise) ? expert.expertise : parseTopics(expert.expertise as unknown as string));
         setLanguages((expert.languages ?? []).join(", "));
       }
@@ -128,6 +130,7 @@ function ExpertProfilePage() {
           company: company || null,
           degree: degree || null,
           school: school || null,
+          degree_year: degreeYear ? Number(degreeYear) : null,
           expertise: topics.length ? (topics as unknown as never) : null,
           languages: langArray.length ? langArray : null,
         } as any,
@@ -209,7 +212,7 @@ function ExpertProfilePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="degree">Diplôme</Label>
               <Input
@@ -226,6 +229,19 @@ function ExpertProfilePage() {
                 placeholder="Ex : HEC Paris"
                 value={school}
                 onChange={(e) => setSchool(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="degreeYear">Année d'obtention</Label>
+              <Input
+                id="degreeYear"
+                type="number"
+                inputMode="numeric"
+                min={1950}
+                max={new Date().getFullYear() + 1}
+                placeholder="Ex : 2018"
+                value={degreeYear}
+                onChange={(e) => setDegreeYear(e.target.value.replace(/[^0-9]/g, "").slice(0, 4))}
               />
             </div>
           </div>
