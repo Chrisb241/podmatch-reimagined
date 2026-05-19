@@ -16,6 +16,8 @@ import SentRequests from "@/components/SentRequests";
 import MyPodcasts from "@/components/MyPodcasts";
 import ActiveConversations from "@/components/ActiveConversations";
 import { useDashboardStats, StatCard } from "@/components/DashboardStats";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { UnreadBadge } from "@/components/UnreadBadge";
 
 export const Route = createFileRoute("/dashboard/podcaster")({
   head: () => ({
