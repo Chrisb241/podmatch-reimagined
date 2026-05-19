@@ -116,6 +116,16 @@ const Navbar = () => {
           <div className="flex gap-2 pt-2">
             {user ? (
               <>
+                <Link to="/messages" className="flex-1" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full relative">
+                    <MessageSquare className="h-4 w-4 mr-1" /> Messages
+                    {unreadTotal > 0 && (
+                      <span className="ml-2">
+                        <UnreadBadge count={unreadTotal} />
+                      </span>
+                    )}
+                  </Button>
+                </Link>
                 <Link to={dashboardPath} className="flex-1" onClick={() => setMobileOpen(false)}>
                   <Button variant="outline" size="sm" className="w-full">Dashboard</Button>
                 </Link>
