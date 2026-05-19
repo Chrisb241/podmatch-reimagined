@@ -82,6 +82,7 @@ function ExpertProfilePage() {
         setCompany((expert as any).company ?? "");
         setDegree((expert as any).degree ?? "");
         setSchool((expert as any).school ?? "");
+        setDegreeYear((expert as any).degree_year ? String((expert as any).degree_year) : "");
         setTopics(Array.isArray(expert.expertise) ? expert.expertise : parseTopics(expert.expertise as unknown as string));
         setLanguages((expert.languages ?? []).join(", "));
       }
