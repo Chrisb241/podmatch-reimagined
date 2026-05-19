@@ -1,5 +1,5 @@
-import { useEffect, useState, type FormEvent } from "react";
-import { Loader2, Mic, Plus, ExternalLink, Trash2 } from "lucide-react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Loader2, Mic, Plus, ExternalLink, Trash2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
