@@ -35,10 +35,6 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent text-accent-foreground text-xs font-semibold mb-6">
-            <span className="h-1.5 w-1.5 rounded-full gradient-primary" />
-            La plateforme #1 de mise en relation podcast
-          </span>
           <h1 className="font-display font-extrabold text-4xl md:text-6xl lg:text-7xl leading-tight tracking-tight max-w-4xl mx-auto">
             Connectez podcasteurs et invités{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-[hsl(280,70%,55%)]">
