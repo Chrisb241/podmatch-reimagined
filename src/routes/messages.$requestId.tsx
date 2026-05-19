@@ -13,6 +13,7 @@ import {
   type Message,
 } from "@/lib/contact";
 import { markConversationRead } from "@/hooks/useUnreadMessages";
+import { MessageContent } from "@/components/LieuMessageCard";
 
 export const Route = createFileRoute("/messages/$requestId")({
   head: () => ({
@@ -186,9 +187,7 @@ function MessagesPage() {
                         : "bg-muted text-foreground rounded-bl-sm"
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">
-                      {m.content}
-                    </p>
+                    <MessageContent content={m.content} mine={mine} />
                     <p
                       className={`text-[10px] mt-1 ${
                         mine ? "text-primary-foreground/70" : "text-muted-foreground"
