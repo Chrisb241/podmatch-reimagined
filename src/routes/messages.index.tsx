@@ -304,9 +304,7 @@ function MessagesPage() {
                                 : "bg-muted text-foreground rounded-bl-sm"
                             }`}
                           >
-                            <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">
-                              {m.content}
-                            </p>
+                            <MessageContent content={m.content} mine={mine} />
                             <p
                               className={`text-[10px] mt-1 ${
                                 mine
