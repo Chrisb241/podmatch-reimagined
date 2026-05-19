@@ -81,21 +81,34 @@ const ReceivedRequests = () => {
         return (
           <div key={r.id} className="p-5 rounded-xl border bg-card">
             <div className="flex items-start gap-4">
-              {r.sender_avatar_url ? (
-                <img
-                  src={r.sender_avatar_url}
-                  alt={senderName}
-                  className="h-12 w-12 rounded-full object-cover ring-2 ring-border"
-                />
-              ) : (
-                <div className="h-12 w-12 rounded-full bg-secondary flex items-center justify-center font-semibold">
-                  {senderName.charAt(0).toUpperCase()}
-                </div>
-              )}
+              <Link
+                to="/profil/$id"
+                params={{ id: r.sender_id }}
+                className="shrink-0 hover:opacity-90 transition-opacity"
+                aria-label={`Voir le profil de ${senderName}`}
+              >
+                {r.sender_avatar_url ? (
+                  <img
+                    src={r.sender_avatar_url}
+                    alt={senderName}
+                    className="h-12 w-12 rounded-full object-cover ring-2 ring-border"
+                  />
+                ) : (
+                  <div className="h-12 w-12 rounded-full bg-secondary flex items-center justify-center font-semibold">
+                    {senderName.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </Link>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h3 className="font-semibold">{senderName}</h3>
+                    <Link
+                      to="/profil/$id"
+                      params={{ id: r.sender_id }}
+                      className="font-semibold hover:underline underline-offset-4"
+                    >
+                      {senderName}
+                    </Link>
                     {r.subject && (
                       <p className="text-sm text-muted-foreground mt-0.5">{r.subject}</p>
                     )}
