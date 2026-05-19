@@ -15,6 +15,7 @@ import {
   type PodcastWithOwner,
 } from "@/lib/queries";
 import { TOPICS, parseTopics } from "@/lib/topics";
+import { LANGUAGES } from "@/lib/languages";
 
 export const Route = createFileRoute("/explore")({
   head: () => ({
@@ -32,6 +33,7 @@ function Explore() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<"experts" | "podcasts">("experts");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [experts, setExperts] = useState<ExpertWithProfile[] | null>(null);
   const [podcasts, setPodcasts] = useState<PodcastWithOwner[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,6 +42,11 @@ function Explore() {
   const toggleTopic = (topic: string) => {
     setSelectedTopics((prev) =>
       prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic],
+    );
+  };
+  const toggleLanguage = (lang: string) => {
+    setSelectedLanguages((prev) =>
+      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang],
     );
   };
 
@@ -75,12 +82,17 @@ function Explore() {
         parseTopics(e.expertise).some((t) => t.toLowerCase().includes(q)) ||
         e.bio?.toLowerCase().includes(q);
       if (!matchesQuery) return false;
-      if (selectedTopics.length === 0) return true;
-      const expertTopics = parseTopics(e.expertise).map((t) => t.toLowerCase());
-      // ET logique : l'expert doit posséder TOUTES les thématiques sélectionnées
-      return selectedTopics.every((t) => expertTopics.includes(t.toLowerCase()));
+      if (selectedTopics.length > 0) {
+        const expertTopics = parseTopics(e.expertise).map((t) => t.toLowerCase());
+        if (!selectedTopics.every((t) => expertTopics.includes(t.toLowerCase()))) return false;
+      }
+      if (selectedLanguages.length > 0) {
+        const expertLangs = (e.languages ?? []).map((l) => l.toLowerCase());
+        if (!selectedLanguages.every((l) => expertLangs.includes(l.toLowerCase()))) return false;
+      }
+      return true;
     });
-  }, [experts, search, selectedTopics]);
+  }, [experts, search, selectedTopics, selectedLanguages]);
 
   const filteredPodcasts = useMemo(() => {
     if (!podcasts) return [];
@@ -170,6 +182,41 @@ function Explore() {
                       }`}
                     >
                       {topic}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="mt-6">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-medium text-muted-foreground">
+                  Filtrer par langue
+                </h2>
+                {selectedLanguages.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedLanguages([])}
+                    className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                  >
+                    <X className="h-3 w-3" /> Réinitialiser ({selectedLanguages.length})
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {LANGUAGES.map((lang) => {
+                  const active = selectedLanguages.includes(lang);
+                  return (
+                    <Badge
+                      key={lang}
+                      variant={active ? "default" : "outline"}
+                      onClick={() => toggleLanguage(lang)}
+                      className={`cursor-pointer select-none transition-colors px-3 py-1 text-xs ${
+                        active
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "hover:bg-accent"
+                      }`}
+                    >
+                      {lang}
                     </Badge>
                   );
                 })}
