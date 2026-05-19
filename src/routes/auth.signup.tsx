@@ -60,9 +60,11 @@ function SignupPage() {
       }
     }
 
-    toast.success("Compte créé ! Redirection…");
+    toast.success("Compte créé ! Complétez votre profil…");
     setTimeout(() => {
-      navigate({ to: role === "podcaster" ? "/dashboard/podcaster" : "/dashboard/guest" });
+      // Les experts sont envoyés directement vers le formulaire de profil
+      // pour apparaître dans l'annuaire Explore.
+      navigate({ to: role === "podcaster" ? "/dashboard/podcaster" : "/profile/expert" });
     }, 500);
   };
 
