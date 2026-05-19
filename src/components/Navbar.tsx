@@ -17,6 +17,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, role, signOut } = useAuth();
+  const { total: unreadTotal } = useUnreadMessages();
   const dashboardPath = role === "guest" ? "/dashboard/guest" : "/dashboard/podcaster";
 
   const handleSignOut = async () => {
