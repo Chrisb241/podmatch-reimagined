@@ -5,11 +5,7 @@ import type { PodcastWithOwner } from "@/lib/queries";
 
 const PodcastCard = ({ podcast }: { podcast: PodcastWithOwner }) => (
   <div className="group bg-card rounded-xl border shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden">
-    <Link
-      to="/profil/$id"
-      params={{ id: podcast.owner_id }}
-      className="block"
-    >
+    <Link to="/podcasts/$id" params={{ id: podcast.id }} className="block">
       <div className="aspect-video bg-secondary relative overflow-hidden">
         {podcast.cover_url ? (
           <img
