@@ -290,33 +290,38 @@ function MessagesPage() {
                       <p className="text-xs mt-1">Envoyez le premier message ci-dessous.</p>
                     </div>
                   ) : (
-                    messages.map((m) => {
+                    messages.map((m, idx) => {
                       const mine = m.sender_id === user.id;
+                      const curDate = new Date(m.created_at);
+                      const prevDate = idx > 0 ? new Date(messages[idx - 1].created_at) : null;
+                      const showSep = !prevDate || !isSameDay(prevDate, curDate);
                       return (
-                        <div
-                          key={m.id}
-                          className={`flex ${mine ? "justify-end" : "justify-start"}`}
-                        >
+                        <div key={m.id}>
+                          {showSep && <DateSeparator date={curDate} />}
                           <div
-                            className={`max-w-[80%] rounded-2xl px-4 py-2 ${
-                              mine
-                                ? "bg-primary text-primary-foreground rounded-br-sm"
-                                : "bg-muted text-foreground rounded-bl-sm"
-                            }`}
+                            className={`flex ${mine ? "justify-end" : "justify-start"}`}
                           >
-                            <MessageContent content={m.content} mine={mine} />
-                            <p
-                              className={`text-[10px] mt-1 ${
+                            <div
+                              className={`max-w-[80%] rounded-2xl px-4 py-2 ${
                                 mine
-                                  ? "text-primary-foreground/70"
-                                  : "text-muted-foreground"
+                                  ? "bg-primary text-primary-foreground rounded-br-sm"
+                                  : "bg-muted text-foreground rounded-bl-sm"
                               }`}
                             >
-                              {new Date(m.created_at).toLocaleTimeString("fr-FR", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </p>
+                              <MessageContent content={m.content} mine={mine} />
+                              <p
+                                className={`text-[10px] mt-1 ${
+                                  mine
+                                    ? "text-primary-foreground/70"
+                                    : "text-muted-foreground"
+                                }`}
+                              >
+                                {new Date(m.created_at).toLocaleTimeString("fr-FR", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       );
