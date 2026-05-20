@@ -57,9 +57,14 @@ function PodcasterDashboard() {
             </div>
             <span className="font-display font-bold text-xl">PodMatch</span>
           </Link>
-          <Button variant="ghost" size="sm" onClick={handleSignOut}>
-            <LogOut className="h-4 w-4 mr-2" /> Déconnexion
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/profile/podcaster">Mon profil</Link>
+            </Button>
+            <Button variant="ghost" size="sm" onClick={handleSignOut}>
+              <LogOut className="h-4 w-4 mr-2" /> Déconnexion
+            </Button>
+          </div>
         </div>
       </header>
 
