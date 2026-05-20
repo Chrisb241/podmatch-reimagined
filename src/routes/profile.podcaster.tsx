@@ -70,13 +70,16 @@ function PodcasterProfilePage() {
 
     const { error } = await supabase
       .from("profiles")
-      .update({
-        display_name: displayName || null,
-        bio: bio || null,
-        location: location || null,
-        avatar_url: avatarUrl || null,
-      })
-      .eq("id", user.id);
+      .upsert(
+        {
+          id: user.id,
+          display_name: displayName || null,
+          bio: bio || null,
+          location: location || null,
+          avatar_url: avatarUrl || null,
+        },
+        { onConflict: "id" },
+      );
 
     if (error) {
       toast.error(`Profil : ${error.message}`);
