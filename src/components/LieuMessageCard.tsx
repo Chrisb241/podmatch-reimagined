@@ -121,6 +121,41 @@ export function parseMessageContent(content: string): MessagePart[] {
   return parts;
 }
 
+export function formatDayLabel(date: Date): string {
+  const now = new Date();
+  const startOf = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const diffDays = Math.round((startOf(now) - startOf(date)) / 86400000);
+  if (diffDays === 0) return "Aujourd'hui";
+  if (diffDays === 1) return "Hier";
+  if (diffDays < 7) {
+    return date.toLocaleDateString("fr-FR", { weekday: "long" }).replace(/^./, (c) => c.toUpperCase());
+  }
+  const sameYear = date.getFullYear() === now.getFullYear();
+  return date.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    ...(sameYear ? {} : { year: "numeric" }),
+  });
+}
+
+export function DateSeparator({ date }: { date: Date }) {
+  return (
+    <div className="flex items-center justify-center my-4">
+      <span className="text-[11px] font-medium text-muted-foreground bg-muted/60 px-3 py-1 rounded-full">
+        {formatDayLabel(date)}
+      </span>
+    </div>
+  );
+}
+
+export function isSameDay(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
 export function MessageContent({ content, mine }: { content: string; mine: boolean }) {
   const parts = parseMessageContent(content);
   return (
