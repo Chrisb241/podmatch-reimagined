@@ -20,6 +20,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as MessagesIndexRouteImport } from './routes/messages.index'
 import { Route as ProfileExpertRouteImport } from './routes/profile.expert'
 import { Route as ProfilIdRouteImport } from './routes/profil.$id'
+import { Route as PodcastsIdRouteImport } from './routes/podcasts.$id'
 import { Route as MessagesRequestIdRouteImport } from './routes/messages.$requestId'
 import { Route as LieuxIdRouteImport } from './routes/lieux.$id'
 import { Route as DashboardPodcasterRouteImport } from './routes/dashboard.podcaster'
@@ -82,6 +83,11 @@ const ProfilIdRoute = ProfilIdRouteImport.update({
   path: '/profil/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PodcastsIdRoute = PodcastsIdRouteImport.update({
+  id: '/podcasts/$id',
+  path: '/podcasts/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MessagesRequestIdRoute = MessagesRequestIdRouteImport.update({
   id: '/messages/$requestId',
   path: '/messages/$requestId',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/podcaster': typeof DashboardPodcasterRoute
   '/lieux/$id': typeof LieuxIdRoute
   '/messages/$requestId': typeof MessagesRequestIdRoute
+  '/podcasts/$id': typeof PodcastsIdRoute
   '/profil/$id': typeof ProfilIdRoute
   '/profile/expert': typeof ProfileExpertRoute
   '/messages/': typeof MessagesIndexRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByTo {
   '/dashboard/podcaster': typeof DashboardPodcasterRoute
   '/lieux/$id': typeof LieuxIdRoute
   '/messages/$requestId': typeof MessagesRequestIdRoute
+  '/podcasts/$id': typeof PodcastsIdRoute
   '/profil/$id': typeof ProfilIdRoute
   '/profile/expert': typeof ProfileExpertRoute
   '/messages': typeof MessagesIndexRoute
@@ -167,6 +175,7 @@ export interface FileRoutesById {
   '/dashboard/podcaster': typeof DashboardPodcasterRoute
   '/lieux/$id': typeof LieuxIdRoute
   '/messages/$requestId': typeof MessagesRequestIdRoute
+  '/podcasts/$id': typeof PodcastsIdRoute
   '/profil/$id': typeof ProfilIdRoute
   '/profile/expert': typeof ProfileExpertRoute
   '/messages/': typeof MessagesIndexRoute
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/dashboard/podcaster'
     | '/lieux/$id'
     | '/messages/$requestId'
+    | '/podcasts/$id'
     | '/profil/$id'
     | '/profile/expert'
     | '/messages/'
@@ -207,6 +217,7 @@ export interface FileRouteTypes {
     | '/dashboard/podcaster'
     | '/lieux/$id'
     | '/messages/$requestId'
+    | '/podcasts/$id'
     | '/profil/$id'
     | '/profile/expert'
     | '/messages'
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '/dashboard/podcaster'
     | '/lieux/$id'
     | '/messages/$requestId'
+    | '/podcasts/$id'
     | '/profil/$id'
     | '/profile/expert'
     | '/messages/'
@@ -246,6 +258,7 @@ export interface RootRouteChildren {
   DashboardPodcasterRoute: typeof DashboardPodcasterRoute
   LieuxIdRoute: typeof LieuxIdRoute
   MessagesRequestIdRoute: typeof MessagesRequestIdRoute
+  PodcastsIdRoute: typeof PodcastsIdRoute
   ProfilIdRoute: typeof ProfilIdRoute
   ProfileExpertRoute: typeof ProfileExpertRoute
   MessagesIndexRoute: typeof MessagesIndexRoute
@@ -330,6 +343,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfilIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/podcasts/$id': {
+      id: '/podcasts/$id'
+      path: '/podcasts/$id'
+      fullPath: '/podcasts/$id'
+      preLoaderRoute: typeof PodcastsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/messages/$requestId': {
       id: '/messages/$requestId'
       path: '/messages/$requestId'
@@ -390,6 +410,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardPodcasterRoute: DashboardPodcasterRoute,
   LieuxIdRoute: LieuxIdRoute,
   MessagesRequestIdRoute: MessagesRequestIdRoute,
+  PodcastsIdRoute: PodcastsIdRoute,
   ProfilIdRoute: ProfilIdRoute,
   ProfileExpertRoute: ProfileExpertRoute,
   MessagesIndexRoute: MessagesIndexRoute,
